@@ -11,7 +11,7 @@ export class ElementalGauge {
         this.decayRate = calculateDecayRate(gaugeUnits);
     }
 
-    react(reactionCoefficient: 0 | 0.5 | 1 | 2, triggerUnit: number): void {
+    react(reactionCoefficient: number, triggerUnit: number): void {
         this.gaugeUnits -= (reactionCoefficient * triggerUnit);
 
         // Ensure gauge units do not go negative

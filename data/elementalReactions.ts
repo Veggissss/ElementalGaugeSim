@@ -14,10 +14,10 @@ export const elementalReactions: Reaction[] = [
     new Reaction('Overloaded', ['Pyro', 'Electro'], 2),
 
     new Reaction('Freeze', ['Cryo', 'Hydro'], 1),
-    new Reaction('Shatter', ['Cryo', 'Geo'], 1), // Applies to blunt attacks as well
+    new Reaction('Shatter', ['Frozen', 'Geo'], 100), // Removes Frozen aura, Applies to blunt attacks as well
 
-    new Reaction('Swirl', ['Anemo', 'Any'], 0.5),
-    new Reaction('Crystallize', ['Geo', 'Any'], 0.5),
+    new Reaction('Swirl', ['Anemo', 'Any'], 0.5), // Swirl applies 2.6U for 
+    new Reaction('Crystallize', ['Geo', 'Any'], 0.5), 
 
     //new Reaction('Quicken', ['Electro', 'Dendro'], 1),
     //new Reaction('Spread', ['Dendro', 'Electro'], 0.5),
