@@ -13,9 +13,6 @@ export class ElementalGauge {
 
     react(reactionCoefficient: number, triggerUnit: number): void {
         this.gaugeUnits -= (reactionCoefficient * triggerUnit);
-
-        // Ensure gauge units do not go negative
-        if (this.gaugeUnits < 0.01) this.gaugeUnits = 0;
     }
 }
 

@@ -1,66 +1,76 @@
 import { ElementalGauge } from "./ElementalGauge";
 import { elementalReactions } from "../data/elementalReactions";
 
+// When an element is applied to a target, a tax is applied to the gauge unit
+const auraTax = 0.8;
+
 export class Target {
     auras: ElementalGauge[] = [];
 
-    addAura(newAura: ElementalGauge): void {
+    private addAuraToTarget(newElement: ElementalGauge): void {
         // Apply aura tax
-        newAura.gaugeUnits = newAura.gaugeUnits * 0.8;
+        newElement.gaugeUnits = newElement.gaugeUnits * auraTax;
 
-        // Add to target
-        this.auras.push(newAura);
+        // Add to target if no reaction occurred and is not an element that can not be applied
+        if (newElement.element != 'Anemo' && newElement.element != 'Geo'){
+            this.auras.push(newElement);
+        }
 
-        // Check for elemental reaction
-        console.log(this.applyReaction());
+        console.log(`Adding ${newElement.element} with gauge ${newElement.gaugeUnits} to target.`)
     }
 
-    applyReaction(): string {
-        if (this.auras.length < 2) return 'No sufficient auras for reaction';
+    public applyElement(newElement: ElementalGauge): ElementalGauge[] {
 
-        let response = 'Reactions Occurred:';
+        // Check for elemental reaction
+        const reactionFound = this.applyReaction(newElement);
+        if (reactionFound) {
+            //(TODO Quicken can have underlying electro aura applied)
+            return this.auras;
+        }
+
+        this.addAuraToTarget(newElement);
+        return this.auras;
+    }
+
+    private applyReaction(newAura: ElementalGauge): boolean {
         let reactionFound = false;
-        console.log(this.auras[0].element);
-        console.log(this.auras[0].gaugeUnits);
-
-        const aura1 = this.auras[0];
-        const aura2 = this.auras[1];
+        if (this.auras.length < 1) {
+            console.log('No sufficient auras for reaction');
+            return reactionFound;
+        }
 
         // Remove duplicate auras
-        if (aura1.element == aura2.element) {
-            // Keep the aura with the highest gauge units and keep initial decay rate
-            aura1.gaugeUnits = Math.max(aura1.gaugeUnits, aura2.gaugeUnits);
-            
-            // Remove the other aura
-            this.auras = this.auras.filter(aura => aura != aura2);
-        }
-
-        const reaction = elementalReactions.find(r => r.elements[0].includes(aura1.element) && r.elements[1].includes(aura2.element));
-        if (reaction) {
-            aura1.react(reaction.coefficient, aura2.gaugeUnits);
-
-            if (reaction.coefficient != 1 && reaction.coefficient != 0) {
-                aura2.gaugeUnits = 0;
-            }
-
-            response += ` ${reaction.name} (${reaction.coefficient}),`;
+        const sameAura = this.auras.find(aura => aura.element == newAura.element);
+        if (sameAura) {
+            // Keep the aura with the highest gauge unit and keep initial decay rate
+            sameAura.gaugeUnits = Math.max(sameAura.gaugeUnits, newAura.gaugeUnits * auraTax);
             reactionFound = true;
+
+            // Since the aura is the same, no reaction occurs
+            return reactionFound;
         }
+        
+        // React with existing aura and new aura
+        let reactionLog = 'Reactions Occurred:';
+        this.auras.forEach(aura => {
+            const reaction = elementalReactions.find(r => r.elements[0].includes(aura.element) && r.elements[1].includes(newAura.element));
+            if (reaction) {
+                aura.react(reaction.coefficient, newAura.gaugeUnits);
+
+                reactionLog += ` ${reaction.name} (${reaction.coefficient}),`;
+                reactionFound = true;
+            }
+        });
 
         // Remove depleted auras
         this.auras = this.auras.filter(aura => aura.gaugeUnits > 0);
 
-        // Remove anemo and geo auras
-        this.auras = this.auras.filter(aura => aura.element != 'Anemo' && aura.element != 'Geo');
-
-        if (!reactionFound) {
-            return 'No Reaction';
-        }
-
-        response += ` Remaining Gauges:`;
+        reactionLog += `\nRemaining Gauges:`;
         this.auras.forEach(aura => {
-            response += ` ${aura.element}: ${aura.gaugeUnits.toFixed(2)},`;
+            reactionLog += ` ${aura.element}: ${aura.gaugeUnits.toFixed(2)},`;
         });
-        return response;
+        console.log(reactionLog);
+
+        return reactionFound;
     }
 }
