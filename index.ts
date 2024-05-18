@@ -14,8 +14,15 @@ const target = new Target();
 //target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
 //target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
 
+//target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+//target.timeStep(1);
+//target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
+
 target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
-target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
+target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+target.timeStep(1);
+target.timeStep(1);
+
 
 
 console.log("\nResulting Target Auras:");

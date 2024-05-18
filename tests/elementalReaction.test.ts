@@ -83,6 +83,8 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
 
         const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
         expect(dendroAura).toBeDefined()
-        expect(dendroAura?.decayRate).toBeCloseTo(0.4)
+        expect(dendroAura?.decayRate).toBe(2.5)
     })
+
+    //TODO simulate extinguish burning aura and react with underlying auras in same reaction.
 })
