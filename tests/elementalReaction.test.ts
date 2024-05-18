@@ -73,7 +73,7 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
 describe('Adding pyro to a target with dendro causes burning reaction', () => {
     const target = new Target();
 
-    test('A burning aura with 2U and the underlying dendro aura should have a decay rate of 0.4U/s', () => {
+    test('A burning aura with 2U and the underlying dendro aura should have a decay rate of 2.5s/U', () => {
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
         target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
 
@@ -84,6 +84,37 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
         expect(dendroAura).toBeDefined()
         expect(dendroAura?.decayRate).toBe(2.5)
+    })
+
+    test('A burning aura caused by adding 1.5U dendro and 1U pyro should last for 3 seconds.', () => {
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1.5))
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
+
+        // Last for at least 3 seconds
+        target.timeStep(2);
+
+        let burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        expect(burningAura).toBeDefined();
+
+        let pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        expect(pyroAura?.gaugeUnits).toBe(0.8); // Reapplied underlying pyro should be 1U * 0.8 = 0.8U
+
+        // Expire after 3 seconds
+        target.timeStep(1);
+        burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        expect(burningAura).not.toBeDefined();
+
+        const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        expect(dendroAura).not.toBeDefined();
+
+        // Pyro aura should be refreshed at 2s
+        pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        expect(pyroAura).toBeDefined();
+
+        // Pyro aura decays completely 9.5s after refresh 
+        target.timeStep(7.5);
+        pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        expect(pyroAura).not.toBeDefined();
     })
 
     //TODO simulate extinguish burning aura and react with underlying auras in same reaction.

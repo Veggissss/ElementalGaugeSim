@@ -18,8 +18,9 @@ const target = new Target();
 //target.timeStep(1);
 //target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
 
-target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1.5));
 target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+target.timeStep(1);
 target.timeStep(1);
 target.timeStep(1);
 

@@ -5,6 +5,9 @@ import { ElementType } from "./Elements/ElementType";
 // When an element is applied to a target, a tax is applied to the gauge unit
 const auraTax = 0.8;
 
+// Units gauge can be considered 0 with floating point error
+const floatPrecision = 0.01;
+
 export class Target {
     auras: ElementalGauge[] = [];
     freezeResist: number;
@@ -39,15 +42,26 @@ export class Target {
 
             console.log(`Decayed ${aura.element.name} to ${aura.gaugeUnits} with decay rate ${aura.decayRate}.`)
         });
+
+        // Remove depleted auras with floating point error
+        this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
         
         // Burning aura generates pyro aura and is removed if dendro is gone
         const burningAura = this.auras.find(aura => aura.element.name == 'Burning');
         if (burningAura) {
             const dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
             if (dendroAura){
+                console.log(burningAura.time)
                 if (burningAura.time >= 2){
                     // Add 1U of pyro aura every 2s
-                    this.addElementAsAura(new ElementalGauge(new ElementType('Pyro'), 1));
+                    const pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
+                    if (pyroAura){
+                        pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * auraTax;
+                        console.log(pyroAura.gaugeUnits)
+                    }
+                    else{
+                        console.error('Pyro aura not found.');
+                    }
                     burningAura.time = 0;
                 }
             }
@@ -120,7 +134,7 @@ export class Target {
                 let remaining = reaction.react(this, aura, newElement);
 
                 // Update reaction gauge for future reactions
-                if (remaining <= 0) {
+                if (remaining <= floatPrecision) {
                     newElement.gaugeUnits += remaining;
                 } else {
                     // Only one reaction, reacting element couldn't react through the aura
@@ -130,7 +144,7 @@ export class Target {
         });
 
         // Remove depleted auras
-        this.auras = this.auras.filter(aura => aura.gaugeUnits > 0);
+        this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
 
         // Logging
         reactionLog += `\nRemaining Gauges:`;

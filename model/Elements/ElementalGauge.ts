@@ -14,10 +14,7 @@ export class ElementalGauge {
         this.originalGaugeUnits = gaugeUnits;
 
         // Calculate unless decay rate is provided
-        if (!decayRate){
-            decayRate = this.calculateDecayRate(gaugeUnits);
-        }
-        this.decayRate = decayRate;
+        this.decayRate = decayRate === undefined ? this.calculateDecayRate(gaugeUnits) : decayRate;
     }
     
     react(reactionCoefficient: number, triggerUnit: number): number {
@@ -27,7 +24,11 @@ export class ElementalGauge {
     }
     
     decay(seconds: number) {
-       this.gaugeUnits -= (1 / this.decayRate) * seconds;
+        if (this.decayRate <= 0){
+            return;
+        }
+
+        this.gaugeUnits -= (1 / this.decayRate) * seconds;
     }
 
     // Calculate the decay rate for a given gauge unit
