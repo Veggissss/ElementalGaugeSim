@@ -17,7 +17,6 @@ export class Target {
         // Check for elemental reaction
         const reactionFound = this.applyReaction(newElement);
         if (reactionFound) {
-            //(TODO Quicken can have underlying electro aura applied)
             return this.auras;
         }
 
