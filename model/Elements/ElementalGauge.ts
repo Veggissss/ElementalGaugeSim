@@ -28,7 +28,7 @@ export class ElementalGauge {
             return;
         }
 
-        this.gaugeUnits -= (1 / this.decayRate) * seconds;
+        this.gaugeUnits -= (seconds / this.decayRate);
     }
 
     // Calculate the decay rate for a given gauge unit
