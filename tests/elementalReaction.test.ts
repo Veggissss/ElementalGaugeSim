@@ -96,23 +96,26 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         let burningAura = target.auras.find(aura => aura.element.name == 'Burning');
         expect(burningAura).toBeDefined();
 
+        // Reapplied underlying pyro should be 1U * 0.8 = 0.8U
         let pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
-        expect(pyroAura?.gaugeUnits).toBe(0.8); // Reapplied underlying pyro should be 1U * 0.8 = 0.8U
+        expect(pyroAura?.gaugeUnits).toBe(0.8); 
 
-        // Expire after 3 seconds
+        // Burning expire after 2+1=3 seconds
         target.timeStep(1);
-        burningAura = target.auras.find(aura => aura.element.name == 'Burning');
-        expect(burningAura).not.toBeDefined();
-
+        // Dendro used up
         const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
         expect(dendroAura).not.toBeDefined();
 
-        // Pyro aura should be refreshed at 2s
+        burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        expect(burningAura).not.toBeDefined();
+
+        // Pyro aura decays completely 9.5s after refresh 
+        target.timeStep(8.4);
         pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
         expect(pyroAura).toBeDefined();
 
-        // Pyro aura decays completely 9.5s after refresh 
-        target.timeStep(7.5);
+        // Pyro expired
+        target.timeStep(0.1);
         pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
         expect(pyroAura).not.toBeDefined();
     })

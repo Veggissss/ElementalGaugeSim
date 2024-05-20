@@ -1,7 +1,7 @@
-import { Reaction } from "../model/Reactions/Reaction";
-import { BurningReaction } from "../model/Reactions/BurningReaction";
-import { FreezeReaction } from "../model/Reactions/FreezeReaction";
-import { QuickenReaction } from "../model/Reactions/QuickenReaction";
+import { Reaction } from "./Reactions/Reaction";
+import { BurningReaction } from "./Reactions/BurningReaction";
+import { FreezeReaction } from "./Reactions/FreezeReaction";
+import { QuickenReaction } from "./Reactions/QuickenReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [

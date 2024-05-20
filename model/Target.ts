@@ -1,12 +1,11 @@
 import { ElementalGauge } from "./Elements/ElementalGauge";
-import { elementalReactions } from "../data/elementalReactions";
-import { ElementType } from "./Elements/ElementType";
+import { elementalReactions } from "./elementalReactions";
 
 // When an element is applied to a target, a tax is applied to the gauge unit
 const auraTax = 0.8;
 
 // Units gauge can be considered 0 with floating point error
-const floatPrecision = 0.01;
+const floatPrecision = 1.0e-10;
 
 export class Target {
     auras: ElementalGauge[] = [];
