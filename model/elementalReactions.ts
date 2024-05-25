@@ -21,7 +21,8 @@ export const elementalReactions: Reaction[] = [
     // Removes Frozen aura, Applies to blunt attacks as well
     new Reaction('Shatter', ['Frozen'], ['Geo'], Infinity),
 
-    new Reaction('Crystallize', ['Geo'], ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], 0.5),
+    new Reaction('Crystallize', ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'],['Geo'], 0.5),
+    new Reaction('Crystallize', ['Geo'], ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], 0.5), // Bosses can have permanent geo aura
 
     // https://library.keqingmains.com/evidence/combat-mechanics/elemental-effects/transformative-reactions#freeze-resistance-correction
     // Frozen aura can be reacted with and have underlying hydro and cryo gauges
@@ -36,6 +37,7 @@ export const elementalReactions: Reaction[] = [
 
     // TODO opponent application & priority: https://library.keqingmains.com/combat-mechanics/elemental-effects/elemental-gauge-theory#swirl-application
     new Reaction('Swirl', ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], ['Anemo'], 0.5),
+    new Reaction('Swirl', ['Anemo'], ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], 0.5), //Bosses can have permanent anemo aura
 
     new QuickenReaction('Quicken Spread', ['Electro'], ['Dendro'], 0),
     new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 0),

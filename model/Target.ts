@@ -26,7 +26,7 @@ export class Target {
         if (newElement.gaugeUnits > 0) {
             this.addElementAsAura(newElement);
         }
-        else{
+        else {
             console.log(`Element ${newElement.element.name} has no gauge units.`);
         }
 
@@ -44,27 +44,26 @@ export class Target {
 
         // Remove depleted auras with floating point error
         this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
-        
+
         // Burning aura generates pyro aura and is removed if dendro is gone
         const burningAura = this.auras.find(aura => aura.element.name == 'Burning');
         if (burningAura) {
             const dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
-            if (dendroAura){
-                console.log(burningAura.time)
-                if (burningAura.time >= 2){
+            if (dendroAura) {
+                if (burningAura.time >= 2) {
                     // Add 1U of pyro aura every 2s
                     const pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
-                    if (pyroAura){
+                    if (pyroAura) {
                         pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * auraTax;
                         console.log(pyroAura.gaugeUnits)
                     }
-                    else{
+                    else {
                         console.error('Pyro aura not found.');
                     }
                     burningAura.time = 0;
                 }
             }
-            else{
+            else {
                 // Remove burning aura if dendro is gone
                 burningAura.gaugeUnits = 0;
             }
@@ -73,18 +72,18 @@ export class Target {
         // Electro-charged aura removes 0.4U/s of electro and hydro auras
         const electroAura = this.auras.find(aura => aura.element.name == 'Electro');
         const hydroAura = this.auras.find(aura => aura.element.name == 'Hydro');
-        if (electroAura && hydroAura){
-            if (electroAura.time >= 1){
+        if (electroAura && hydroAura) {
+            if (electroAura.time >= 1) {
                 electroAura.gaugeUnits -= 0.4;
             }
-            if (hydroAura.time >= 1){
+            if (hydroAura.time >= 1) {
                 hydroAura.gaugeUnits -= 0.4;
             }
         }
 
         // Remove depleted auras
         this.auras = this.auras.filter(aura => aura.gaugeUnits > 0);
-        
+
         return this.auras;
     }
 
@@ -123,24 +122,54 @@ export class Target {
 
         // React with existing aura and new aura
         let reactionLog = 'Reactions Occurred:';
-        this.auras.forEach(aura => {
-            const reaction = elementalReactions.find(reaction => reaction.auraElementName.includes(aura.element.name) && reaction.appliedElementName.includes(newElement.element.name));
+        let i = 0;
+
+        while (i < this.auras.length) {
+            const aura = this.auras[i];
+            i++; // Increment i before removing auras
+
+            const reaction = elementalReactions.find(reaction =>
+                reaction.auraElementName.includes(aura.element.name) &&
+                reaction.appliedElementName.includes(newElement.element.name)
+            );
+
             if (reaction) {
-                reactionLog += ` ${reaction.name} (${reaction.coefficient}),`;
+                reactionLog += `\n${reaction.name} (${reaction.coefficient}R), ${aura.element.name} (${aura.gaugeUnits}U) + ${newElement.element.name} (${newElement.gaugeUnits}U).`;
                 reactionFound = true;
-                
+
                 // Do reaction
                 let remaining = reaction.react(this, aura, newElement);
 
-                // Update reaction gauge for future reactions
+                // Remaining aura is gone.
                 if (remaining <= floatPrecision) {
-                    newElement.gaugeUnits += remaining;
+                    // Update reaction gauge for future reactions (Add a negative number)
+                    if (reaction.coefficient != 0 && reaction.coefficient != Infinity) { //TODO: account for non strong and weak-side reactions like swirl
+                        newElement.gaugeUnits += remaining / reaction.coefficient;
+                    } else {
+                        // Non strong and weak-side reactions
+                        newElement.gaugeUnits += remaining;
+                    }
+
+                    // If burning aura is used up, remove underlying pyro and reset dendro decay rate.
+                    if (aura.element.name == 'Burning') {
+                        let pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
+                        if (pyroAura) {
+                            pyroAura.gaugeUnits = 0;
+                        }
+
+                        let dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
+                        if (dendroAura) {
+                            dendroAura.decayRate = dendroAura.calculateDecayRate(dendroAura.originalGaugeUnits);
+                        }
+                    }
+                    this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
+                    i = 0; // Reset i to restart for new auras
                 } else {
                     // Only one reaction, reacting element couldn't react through the aura
-                    return;
+                    break;
                 }
             }
-        });
+        }
 
         // Remove depleted auras
         this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
@@ -148,7 +177,7 @@ export class Target {
         // Logging
         reactionLog += `\nRemaining Gauges:`;
         this.auras.forEach(aura => {
-            reactionLog += ` ${aura.element.name}: ${aura.gaugeUnits},`;
+            reactionLog += `\n${aura.element.name} (${aura.gaugeUnits}U)`;
         });
         console.log(reactionLog);
 

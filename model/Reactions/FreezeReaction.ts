@@ -25,6 +25,6 @@ export class FreezeReaction extends Reaction {
             cryoAura.gaugeUnits = 0;
         }
 
-        return auraElement.gaugeUnits;
+        return frozenGauge;
     }
 }

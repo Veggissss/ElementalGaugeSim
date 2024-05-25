@@ -40,6 +40,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         let auras = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
         expect(auras[0].element.name).toBe('Frozen');
         expect(auras[1].element.name).toBe('Hydro');
+
+        expect(auras[1].gaugeUnits).toBeCloseTo(1.6);
     });
 
     test('Adding 1U cryo to a target that has 2U hydro, leaves only a frozen aura.', () => {
@@ -121,4 +123,18 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
     })
 
     //TODO simulate extinguish burning aura and react with underlying auras in same reaction.
+    test('An extinguished burning aura results in dendro which can be reached by a strong reactor', () => {
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
+
+        target.timeStep(1);
+        
+        // Extinguish burning aura and react with underlying dendro
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2))
+     
+        target.auras.forEach(aura => {
+            console.log(`Element: ${aura.element.name}, Gauge: ${aura.gaugeUnits}`);
+        })
+    })
+
 })
