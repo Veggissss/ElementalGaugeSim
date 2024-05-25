@@ -1,4 +1,5 @@
 import { ElementalGauge } from "./Elements/ElementalGauge";
+import { Reaction } from "./Reactions/Reaction";
 import { elementalReactions } from "./elementalReactions";
 
 // When an element is applied to a target, a tax is applied to the gauge unit
@@ -15,11 +16,12 @@ export class Target {
         this.freezeResist = freezeResist;
     }
 
-    public applyElement(newElement: ElementalGauge): ElementalGauge[] {
+    public applyElement(newElement: ElementalGauge): Reaction[] {
         // Check for elemental reaction
         const reactionFound = this.applyReaction(newElement);
-        if (reactionFound) {
-            return this.auras;
+        if (reactionFound.length > 0) {
+            console.log(reactionFound);
+            return reactionFound;
         }
 
         // Since no reaction occurred, add the new element as an aura
@@ -29,8 +31,7 @@ export class Target {
         else {
             console.log(`Element ${newElement.element.name} has no gauge units.`);
         }
-
-        return this.auras;
+        return [];
     }
 
     public timeStep(seconds: number): ElementalGauge[] {
@@ -100,11 +101,10 @@ export class Target {
         this.auras.push(newElement);
     }
 
-    private applyReaction(newElement: ElementalGauge): boolean {
-        let reactionFound = false;
+    private applyReaction(newElement: ElementalGauge): Reaction[] {
         if (this.auras.length < 1) {
             console.log('No sufficient auras for reaction');
-            return reactionFound;
+            return [];
         }
 
         // Remove duplicate auras
@@ -114,16 +114,16 @@ export class Target {
             // Keep the aura with the highest gauge unit and keep initial decay rate
             //TODO implement 'bugged' behavior for EC? https://library.keqingmains.com/evidence/combat-mechanics/elemental-effects/transformative-reactions#ec-hydro-aura-electro-trigger-interaction-is-bugged
             sameAura.gaugeUnits = Math.max(sameAura.gaugeUnits, newElement.gaugeUnits * auraTax);
-            reactionFound = true;
 
             // Since the aura is the same, no reaction occurs
-            return reactionFound;
+            return [new Reaction("Same Element", [sameAura.element.name], [sameAura.element.name], 0)];
         }
 
         // React with existing aura and new aura
         let reactionLog = 'Reactions Occurred:';
         let i = 0;
 
+        const reactions : Reaction[] = [];
         while (i < this.auras.length) {
             const aura = this.auras[i];
             i++; // Increment i before removing auras
@@ -134,8 +134,8 @@ export class Target {
             );
 
             if (reaction) {
+                reactions.push(reaction);
                 reactionLog += `\n${reaction.name} (${reaction.coefficient}R), ${aura.element.name} (${aura.gaugeUnits}U) + ${newElement.element.name} (${newElement.gaugeUnits}U).`;
-                reactionFound = true;
 
                 // Do reaction
                 let remaining = reaction.react(this, aura, newElement);
@@ -181,6 +181,6 @@ export class Target {
         });
         console.log(reactionLog);
 
-        return reactionFound;
+        return reactions;
     }
 }

@@ -8,4 +8,5 @@ export type ReactionName =
     'Shatter' | 'Freeze' | 
     'Electro-Charged' | 'Burning' |
     'Swirl' | 'Crystallize' | 
-    'Quicken Aggravate' | 'Quicken Spread';
+    'Quicken Aggravate' | 'Quicken Spread'
+    | 'Same Element';
