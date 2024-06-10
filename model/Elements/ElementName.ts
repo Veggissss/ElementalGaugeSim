@@ -1,4 +1,16 @@
-const elementNames = ["Pyro", "Burning", "Hydro", "Electro", "Cryo", "Geo", "Anemo", "Dendro", "Quicken", "Frozen"] as const;
-type ElementName = typeof elementNames[number]
 
-export { ElementName, elementNames };
+// Name all elements and possible auras
+export const elementNames = [
+    "Pyro",
+    "Hydro",
+    "Electro",
+    "Cryo",
+    "Geo",
+    "Anemo",
+    "Dendro",
+    "Burning",
+    "Quicken",
+    "Frozen"
+] as const;
+
+export type ElementName = typeof elementNames[number];

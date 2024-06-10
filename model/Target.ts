@@ -52,7 +52,9 @@ export class Target {
             const dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
             if (dendroAura) {
                 if (burningAura.time >= 2) {
-                    // Add 1U of pyro aura every 2s
+                    burningAura.time = 0;
+
+                    // Reapply pyro aura every 2s
                     const pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
                     if (pyroAura) {
                         pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * auraTax;
@@ -61,7 +63,6 @@ export class Target {
                     else {
                         console.error('Pyro aura not found.');
                     }
-                    burningAura.time = 0;
                 }
             }
             else {
@@ -75,9 +76,11 @@ export class Target {
         const hydroAura = this.auras.find(aura => aura.element.name == 'Hydro');
         if (electroAura && hydroAura) {
             if (electroAura.time >= 1) {
+                electroAura.time = 0;
                 electroAura.gaugeUnits -= 0.4;
             }
             if (hydroAura.time >= 1) {
+                hydroAura.time = 0;
                 hydroAura.gaugeUnits -= 0.4;
             }
         }
@@ -150,18 +153,6 @@ export class Target {
                         newElement.gaugeUnits += remaining;
                     }
 
-                    // If burning aura is used up, remove underlying pyro and reset dendro decay rate.
-                    if (aura.element.name == 'Burning') {
-                        let pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
-                        if (pyroAura) {
-                            pyroAura.gaugeUnits = 0;
-                        }
-
-                        let dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
-                        if (dendroAura) {
-                            dendroAura.decayRate = dendroAura.calculateDecayRate(dendroAura.originalGaugeUnits);
-                        }
-                    }
                     this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
                     i = 0; // Reset i to restart for new auras
                 } else {

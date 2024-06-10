@@ -3,6 +3,8 @@ import { ElementName } from "../Elements/ElementName";
 import { ReactionName } from "./ReactionName";
 import { Target } from "../Target";
 
+const floatPrecision = 1.0e-10;
+
 export class Reaction {
     name: ReactionName;
     auraElementName: ElementName[];
@@ -19,10 +21,15 @@ export class Reaction {
     public react(target: Target, auraElement: ElementalGauge, appliedElement: ElementalGauge): number {
         const remainingGaugeUnits = auraElement.react(this.coefficient, appliedElement.gaugeUnits);
 
-        // Change dendro if burning aura is gone
-        if (auraElement.element.name == 'Burning' && remainingGaugeUnits == 0) {
+        // If burning aura is used up, remove underlying pyro and reset dendro decay rate.
+        if (auraElement.element.name == 'Burning' && remainingGaugeUnits < floatPrecision) {
             // Remove burning aura if dendro is gone
             auraElement.gaugeUnits = 0;
+
+            const pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+            if (pyroAura) {
+                pyroAura.gaugeUnits = 0;
+            }
             
             const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
             if (dendroAura){
