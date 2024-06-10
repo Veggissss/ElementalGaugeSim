@@ -141,7 +141,7 @@ export class Target {
                 reactionLog += `\n${reaction.name} (${reaction.coefficient}R), ${aura.element.name} (${aura.gaugeUnits}U) + ${newElement.element.name} (${newElement.gaugeUnits}U).`;
 
                 // Do reaction
-                let remaining = reaction.react(this, aura, newElement);
+                const remaining = reaction.react(this, aura, newElement);
 
                 // Remaining aura is gone.
                 if (remaining <= floatPrecision) {

@@ -82,6 +82,37 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
     })
 })
 
+describe('Adding electro and hydro to a target causes an electro-charge reaction', () => {
+    const target = new Target();
+
+    test('Adding 1U electro to a target with 1U hydro removes 0.4U/s. Ticking immediately once applied and then once every second.', () => {
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1))
+
+        // Apply electro
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1))
+
+        let electroAura = target.auras.find(aura => aura.element.name == "Electro");
+        let hydroAura = target.auras.find(aura => aura.element.name == "Hydro");
+        
+        expect(electroAura).toBeDefined();
+        expect(hydroAura).toBeDefined();
+
+        // 1U * 0.8-tax = 0.8U - 0.4U EC Tick = 0.4U
+        expect(electroAura?.gaugeUnits).toBeCloseTo(0.4);
+        expect(hydroAura?.gaugeUnits).toBeCloseTo(0.4);
+
+        // Remove 0.4U of electro and hydro auras = 0U
+        target.timeStep(1);
+
+        // Check that both auras are removed
+        electroAura = target.auras.find(aura => aura.element.name == "Electro");
+        hydroAura = target.auras.find(aura => aura.element.name == "Hydro");
+
+        expect(electroAura).not.toBeDefined();
+        expect(hydroAura).not.toBeDefined();
+    })
+})
+
 describe('Adding pyro to a target with dendro causes burning reaction', () => {
     const target = new Target();
 
@@ -147,5 +178,4 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         // Check that reverse bloom occurred through the burning aura
         expect(reactions.find(reaction => reaction.name === "Reverse Bloom")).toBeTruthy();
     })
-
 })

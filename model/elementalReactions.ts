@@ -2,6 +2,7 @@ import { Reaction } from "./Reactions/Reaction";
 import { BurningReaction } from "./Reactions/BurningReaction";
 import { FreezeReaction } from "./Reactions/FreezeReaction";
 import { QuickenReaction } from "./Reactions/QuickenReaction";
+import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [
@@ -32,8 +33,8 @@ export const elementalReactions: Reaction[] = [
     // EC will tick once per second so long as enough Electro and Hydro gauge remain, -0.4U from both gauges each tick;
     // When either the Electro or Hydro gauge completely decays, the next Electro-Charged tick will prematurely occur at the moment when the gauge is completely decayed. 
     // However, if one of the gauges empties within 0.5s of the last Electro-Charged tick, there will not be another tick of Electro-Charged.
-    new Reaction('Electro-Charged', ['Electro'], ['Hydro'], 0),
-    new Reaction('Electro-Charged', ['Hydro'], ['Electro'], 0),
+    new ElectroChargedReaction('Electro-Charged', ['Electro'], ['Hydro'], 0),
+    new ElectroChargedReaction('Electro-Charged', ['Hydro'], ['Electro'], 0),
 
     // TODO opponent application & priority: https://library.keqingmains.com/combat-mechanics/elemental-effects/elemental-gauge-theory#swirl-application
     new Reaction('Swirl', ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], ['Anemo'], 0.5),
