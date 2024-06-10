@@ -132,7 +132,6 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         expect(pyroAura).not.toBeDefined();
     })
 
-    //TODO simulate extinguish burning aura and react with underlying auras in same reaction.
     test('An extinguished burning aura results in dendro which can be reached by a strong reactor', () => {
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
         target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
@@ -140,11 +139,13 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         target.timeStep(1);
         
         // Extinguish burning aura and react with underlying dendro
-        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2))
-     
-        target.auras.forEach(aura => {
-            console.log(`Element: ${aura.element.name}, Gauge: ${aura.gaugeUnits}`);
-        })
+        const reactions = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2))
+        
+        // See burning reacted
+        expect(reactions.find(reaction => reaction.name === "Vaporize")).toBeTruthy();
+
+        // Check that reverse bloom occurred through the burning aura
+        expect(reactions.find(reaction => reaction.name === "Reverse Bloom")).toBeTruthy();
     })
 
 })
