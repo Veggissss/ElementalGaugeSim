@@ -24,4 +24,33 @@ export class BurningReaction extends Reaction {
         
         return auraElement.gaugeUnits;
     }
+
+    /**
+     * Burning aura generates pyro aura and is removed if dendro is gone
+     * @param target target with burning aura
+     */
+    public static step(target: Target) {
+        const burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+
+        if (burningAura) {
+            const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+            if (dendroAura) {
+                // Reapply pyro aura every 2s
+                if (burningAura.time >= 2) {
+                    burningAura.time = 0;
+
+                    const pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+                    if (pyroAura) {
+                        pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * target.auraTax;
+                        console.log(pyroAura.gaugeUnits);
+                    } else {
+                        console.error('Pyro aura not found.');
+                    }
+                }
+            } else {
+                // Remove burning aura if dendro is gone
+                burningAura.gaugeUnits = 0;
+            }
+        }
+    }
 }

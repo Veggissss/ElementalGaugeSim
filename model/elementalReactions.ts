@@ -30,9 +30,6 @@ export const elementalReactions: Reaction[] = [
     new FreezeReaction('Freeze', ['Cryo', 'Frozen'], ['Hydro'], 0),
     new FreezeReaction('Freeze', ['Hydro'], ['Cryo', 'Frozen'], 0),
 
-    // EC will tick once per second so long as enough Electro and Hydro gauge remain, -0.4U from both gauges each tick;
-    // When either the Electro or Hydro gauge completely decays, the next Electro-Charged tick will prematurely occur at the moment when the gauge is completely decayed. 
-    // However, if one of the gauges empties within 0.5s of the last Electro-Charged tick, there will not be another tick of Electro-Charged.
     new ElectroChargedReaction('Electro-Charged', ['Electro'], ['Hydro'], 0),
     new ElectroChargedReaction('Electro-Charged', ['Hydro'], ['Electro'], 0),
 

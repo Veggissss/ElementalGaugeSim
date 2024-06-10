@@ -1,14 +1,16 @@
 import { ElementalGauge } from "./Elements/ElementalGauge";
+import { BurningReaction } from "./Reactions/BurningReaction";
+import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
 import { Reaction } from "./Reactions/Reaction";
 import { elementalReactions } from "./elementalReactions";
-
-// When an element is applied to a target, a tax is applied to the gauge unit
-const auraTax = 0.8;
 
 // Units gauge can be considered 0 with floating point error
 const floatPrecision = 1.0e-10;
 
 export class Target {
+    // When an element is applied to a target, a tax is applied to the gauge unit
+    auraTax = 0.8;
+
     auras: ElementalGauge[] = [];
     freezeResist: number;
 
@@ -43,47 +45,12 @@ export class Target {
             console.log(`Decayed ${aura.element.name} to ${aura.gaugeUnits} with decay rate ${aura.decayRate}.`)
         });
 
+        ElectroChargedReaction.step(this);
+
         // Remove depleted auras with floating point error
         this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
 
-        // Burning aura generates pyro aura and is removed if dendro is gone
-        const burningAura = this.auras.find(aura => aura.element.name == 'Burning');
-        if (burningAura) {
-            const dendroAura = this.auras.find(aura => aura.element.name == 'Dendro');
-            if (dendroAura) {
-                if (burningAura.time >= 2) {
-                    burningAura.time = 0;
-
-                    // Reapply pyro aura every 2s
-                    const pyroAura = this.auras.find(aura => aura.element.name == 'Pyro');
-                    if (pyroAura) {
-                        pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * auraTax;
-                        console.log(pyroAura.gaugeUnits)
-                    }
-                    else {
-                        console.error('Pyro aura not found.');
-                    }
-                }
-            }
-            else {
-                // Remove burning aura if dendro is gone
-                burningAura.gaugeUnits = 0;
-            }
-        }
-
-        // Electro-charged aura removes 0.4U/s of electro and hydro auras
-        const electroAura = this.auras.find(aura => aura.element.name == 'Electro');
-        const hydroAura = this.auras.find(aura => aura.element.name == 'Hydro');
-        if (electroAura && hydroAura) {
-            if (electroAura.time >= 1) {
-                electroAura.time = 0;
-                electroAura.gaugeUnits -= 0.4;
-            }
-            if (hydroAura.time >= 1) {
-                hydroAura.time = 0;
-                hydroAura.gaugeUnits -= 0.4;
-            }
-        }
+        BurningReaction.step(this);
 
         // Remove depleted auras
         this.auras = this.auras.filter(aura => aura.gaugeUnits > 0);
@@ -93,7 +60,7 @@ export class Target {
 
     public addElementAsAura(newElement: ElementalGauge): void {
         // Apply aura tax
-        newElement.gaugeUnits *= auraTax;
+        newElement.gaugeUnits *= this.auraTax;
 
         // Add to target if no reaction occurred and is not an element that can not be applied
         if (!newElement.element.canBeAura) {
@@ -116,7 +83,7 @@ export class Target {
             console.log(`Same aura ${sameAura.element.name} found.`);
             // Keep the aura with the highest gauge unit and keep initial decay rate
             //TODO implement 'bugged' behavior for EC? https://library.keqingmains.com/evidence/combat-mechanics/elemental-effects/transformative-reactions#ec-hydro-aura-electro-trigger-interaction-is-bugged
-            sameAura.gaugeUnits = Math.max(sameAura.gaugeUnits, newElement.gaugeUnits * auraTax);
+            sameAura.gaugeUnits = Math.max(sameAura.gaugeUnits, newElement.gaugeUnits * this.auraTax);
 
             // Since the aura is the same, no reaction occurs
             return [new Reaction("Same Element", [sameAura.element.name], [sameAura.element.name], 0)];
