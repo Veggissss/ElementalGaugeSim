@@ -42,18 +42,6 @@ export const elementalReactions: Reaction[] = [
     new QuickenReaction('Quicken Spread', ['Electro'], ['Dendro'], 0),
     new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 0),
 
-    // Old?: Decay rate of Dendro while burning is the sum of the natural decay rates of Dendro and Pyro auras
-    // Burning applies 1U of Pyro aura every 2s (8 ticks) of damage
-
-    // Burning ~2s per 1U of dendro aura so 1.5U dendro aura will last ~3s; assumption: decay rate is 2U/s for all units?
-    // Remaining Pyro gauge of burning will always be 1U?: Nope gauge varies; depends on pyro aura gauge &(and max dendro?), and decay rate of first initial aura? further needs testing.
-
-    // If a burning aura is vaporized or melted, the resulting aura will be dendro that decays at initial dendro decay rate with reduced gauge.
-
-    // So when there is a burning aura, the decay rate of dendro aura is 0.4U/s. 
-    // It refreshes the underlying pyro aura every 2s,
-
-    // The burning aura specifically has a gauge of 2U, so 1.6U with tax. So it does not decay at all
     new BurningReaction('Burning', ['Pyro'], ['Quicken', 'Dendro'], 0),
     new BurningReaction('Burning', ['Quicken', 'Dendro'], ['Pyro'], 0),
 ];
