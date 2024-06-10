@@ -1,0 +1,35 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x] # Test versions
+
+    defaults:
+      run:
+        working-directory: /simulator
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: simulator/package-lock.json
+
+      - name: Install dependencies
+        run: cd simulator && npm ci
+
+      - name: Run tests
+        run: cd simulator && npm test
