@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: simulator
 
     strategy:
       matrix:
@@ -24,13 +27,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          cd simulator
-          npm ci
+        run: npm ci
 
       - name: Run tests
-        run: |
-          cd simulator
-          npm test
+        run: npm test
         env:
           CI: true
