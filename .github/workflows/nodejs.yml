@@ -16,14 +16,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - run: cd /simulator
-      - run: npm ci
-      - run: npm test
+      - name: Install dependencies
+        run: |
+          cd simulator
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd simulator
+          npm test
         env:
           CI: true
