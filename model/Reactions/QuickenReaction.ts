@@ -10,8 +10,13 @@ export class QuickenReaction extends Reaction {
         const quickenGauge = Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits);
         const quickenDurationSeconds = quickenGauge * 5 + 6;
 
-        // Add frozen aura and apply reacting element as an aura
+        // Remove excising quicken aura, (if any)
+        target.auras = target.auras.filter(aura => aura.element.name !== 'Quicken');
+
+        // Add quicken aura and apply reacting element as an aura
         target.auras.unshift(new ElementalGauge(new ElementType('Quicken'), quickenGauge, (quickenGauge / quickenDurationSeconds)));
+
+        // Apply element as underlying aura
         target.addElementAsAura(appliedElement);
 
         return auraElement.gaugeUnits;
