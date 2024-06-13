@@ -6,14 +6,17 @@ import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [
-    new Reaction('Vaporize', ['Pyro', 'Burning'], ['Hydro'], 2),
-    new Reaction('Reverse Vaporize', ['Hydro'], ['Pyro', 'Burning'], 0.5),
+    new Reaction('Vaporize', ['Burning', 'Pyro'], ['Hydro'], 2),
+    new Reaction('Reverse Vaporize', ['Hydro'], ['Burning', 'Pyro'], 0.5),
 
-    new Reaction('Melt', ['Cryo', 'Frozen'], ['Pyro', 'Burning'], 2),
-    new Reaction('Reverse Melt', ['Pyro', 'Burning'], ['Cryo', 'Frozen'], 0.5),
+    new Reaction('Melt', ['Cryo', 'Frozen'], ['Burning', 'Pyro'], 2),
+    new Reaction('Reverse Melt', ['Burning', 'Pyro'], ['Cryo', 'Frozen'], 0.5),
 
     new Reaction('Superconduct', ['Cryo', 'Frozen'], ['Electro'], 1),
-    new Reaction('Overloaded', ['Pyro', 'Burning'], ['Electro'], 1),
+    new Reaction('Superconduct', ['Electro'], ['Cryo', 'Frozen'], 1),
+
+    new Reaction('Overloaded', ['Burning', 'Pyro'], ['Electro'], 1),
+    new Reaction('Overloaded', ['Electro'], ['Burning', 'Pyro'], 1),
 
     new Reaction('Bloom', ['Hydro'], ['Quicken', 'Dendro'], 2),
     new Reaction('Reverse Bloom', ['Quicken', 'Dendro'], ['Hydro'], 0.5),
@@ -22,7 +25,7 @@ export const elementalReactions: Reaction[] = [
     // Removes Frozen aura, Applies to blunt attacks as well
     new Reaction('Shatter', ['Frozen'], ['Geo'], Infinity),
 
-    new Reaction('Crystallize', ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'],['Geo'], 0.5),
+    new Reaction('Crystallize', ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], ['Geo'], 0.5),
     new Reaction('Crystallize', ['Geo'], ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], 0.5), // Bosses can have permanent geo aura
 
     // https://library.keqingmains.com/evidence/combat-mechanics/elemental-effects/transformative-reactions#freeze-resistance-correction

@@ -113,7 +113,10 @@ export class Target {
                 // Remaining aura is gone.
                 if (remaining <= floatPrecision) {
                     // Update reaction gauge for future reactions (Add a negative number)
-                    if (reaction.coefficient != 0 && reaction.coefficient != Infinity) { //TODO: account for non strong and weak-side reactions like swirl
+                    if (reaction.coefficient == Infinity){
+                        newElement.gaugeUnits = 0;
+                    }
+                    else if (reaction.coefficient != 0) { //TODO: account for non strong and weak-side reactions like swirl
                         newElement.gaugeUnits += remaining / reaction.coefficient;
                     } else {
                         // Non strong and weak-side reactions

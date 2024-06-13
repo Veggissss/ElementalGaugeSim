@@ -5,9 +5,9 @@ export const elementNames = [
     "Hydro",
     "Electro",
     "Cryo",
+    "Dendro",
     "Geo",
     "Anemo",
-    "Dendro",
     "Burning",
     "Quicken",
     "Frozen"
