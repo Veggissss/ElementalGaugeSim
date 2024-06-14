@@ -50,9 +50,20 @@ export const TargetComponent = () => {
         setTarget(newTarget);
     };
 
-    const renderElementImages = () => {
+    function getElementImages() : { [key: string]: string } {
         const elementImages: { [key: string]: string } = {};
-        elementNames.forEach((element) => elementImages[element] = `/Element_${element}.png`);
+
+        let filePath = "/";
+        if (process.env.PUBLIC_URL){
+            filePath = process.env.PUBLIC_URL;
+        }
+        elementNames.forEach((element) => elementImages[element] = filePath + `images/Element_${element}.png`);
+
+        return elementImages;
+    }
+
+    const renderElementImages = () => {
+        const elementImages: { [key: string]: string } = getElementImages();
 
         return target.auras.map((aura, index) => (
             <div key={index}>
@@ -93,8 +104,7 @@ export const TargetComponent = () => {
     }
 
     const renderReactionImages = () => {
-        const elementImages: { [key: string]: string } = {};
-        elementNames.forEach((element) => elementImages[element] = `/Element_${element}.png`);
+        const elementImages: { [key: string]: string } = getElementImages();
 
         return reactions.map((reaction, index) => (
             <div key={index}>
