@@ -4,16 +4,20 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 50, 60, 80;
+  --background-end-rgb: 220, 220, 220;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 80, 80, 110;
-    --background-end-rgb: 30, 30, 30;
+    --background-start-rgb: 50, 50, 70;
+    --background-end-rgb: 30, 40, 60;
   }
+}
+
+#footer {
+  display: "flex";
 }
 
 h1{
@@ -21,16 +25,24 @@ h1{
 }
 
 body {
+  padding-left: 1em;
+  padding-right: 1em;
+
   display: flex;
   justify-content: center;
   align-content: center;
   align-items: center;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to left,
+      to right,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
+      rgb(var(--background-end-rgb)),
+      rgb(var(--background-end-rgb)),
+      rgb(var(--background-end-rgb)),
+      rgb(var(--background-end-rgb)),
+      rgb(var(--background-end-rgb)),
+      transparent
+      )
     rgb(var(--background-start-rgb));
 }
 

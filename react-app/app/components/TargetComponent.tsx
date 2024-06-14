@@ -54,7 +54,7 @@ export const TargetComponent = () => {
 
         return target.auras.map((aura, index) => (
             <div key={index}>
-                <h3>{aura.gaugeUnits.toFixed(2)}U {aura.element.name} Decay: {aura.decayRate.toFixed(2)}U/s</h3>
+                <h3>{aura.gaugeUnits.toFixed(2)}U {aura.element.name} Decay: {aura.decayRate.toFixed(3)}U/s</h3>
                 <Image src={elementImages[aura.element.name]} alt={aura.element.name} height={50} width={50} />
             </div>
         ));
@@ -104,9 +104,9 @@ export const TargetComponent = () => {
 
     return (
         <div>
-            <Typography 
-                variant="h1" 
-                gutterBottom 
+            <Typography
+                variant="h1"
+                gutterBottom
                 style={{ fontSize: 'calc(1.5em + 2vw)' }} // Adjust the value as needed
             >
                 Elemental Gauge Simulator
@@ -123,16 +123,16 @@ export const TargetComponent = () => {
                     <div>{renderReactionImages()}</div>
                 </Box>
             </div>
-            
+
 
             <div>
                 <h2>Applied Element Unit:</h2>
-                <Box sx={{ width: 300 }}>
+                <Box style = {{ width: 200 }}>
                     <Slider
                         value={units}
                         onChange={handleUnitsChange}
                         min={0}
-                        max={10}
+                        max={8}
                         step={0.5}
                         aria-label="Default"
                         valueLabelDisplay="auto"
@@ -141,38 +141,39 @@ export const TargetComponent = () => {
                 </Box>
                 <Grid container spacing={1}>
                     {
-                        elementNames.slice(0,7).map((element, index) => (
+                        elementNames.slice(0, 7).map((element, index) => (
                             <Grid item xs={5} sm={4} md={3} lg={0} key={index}>
-                                <Button key={element} variant="contained" style={{ background: elementColorMap[element], justifySelf: "center" }} onClick={() => handleAddElement(element)}>
-                                {units}U {element}
+                                <Button key={element} variant="contained" style={{ textShadow: "5", background: elementColorMap[element], justifySelf: "center" }} onClick={() => handleAddElement(element)}>
+                                    {element} {units.toFixed(1)}U
                                 </Button>
                             </Grid>
                         ))
                     }
                 </Grid>
-
+                
+                <br />
                 <div>
                     <h2>Simulate Time:</h2>
-                    <Box sx={{ width: 300 }}>
+                    <Box style ={{ width: 200 }}>
                         <Slider
                             value={time}
                             onChange={handleTimeChange}
                             min={0}
-                            max={10}
-                            step={0.5}
+                            max={8}
+                            step={0.1}
                             aria-label="Default"
                             valueLabelDisplay="auto"
                             style={{ marginLeft: '8px' }}
                         />
                     </Box>
                     <Button variant="contained" onClick={() =>
-                        handleTimeStep()}>Time Step {time} seconds
+                        handleTimeStep()}>Time Step {time.toFixed(1)} seconds
                     </Button>
                 </div>
             </div>
 
 
-            <div style={{ display: "flex", justifyContent: "center", padding: "2em"}}>
+            <div style={{ display: "flex", justifyContent: "center", padding: "2em" }}>
                 <Button variant="outlined" color='error' onClick={() =>
                     handleRemoveAuras()}>Remove Auras
                 </Button>
