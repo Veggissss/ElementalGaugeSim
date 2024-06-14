@@ -2,6 +2,7 @@ import { ElementalGauge } from "./Elements/ElementalGauge";
 import { BurningReaction } from "./Reactions/BurningReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
 import { Reaction } from "./Reactions/Reaction";
+import { ReactionLog } from "./Reactions/ReactionLog";
 import { elementalReactions } from "./elementalReactions";
 
 // Units gauge can be considered 0 with floating point error
@@ -18,12 +19,12 @@ export class Target {
         this.freezeResist = freezeResist;
     }
 
-    public applyElement(newElement: ElementalGauge): Reaction[] {
+    public applyElement(newElement: ElementalGauge): ReactionLog[] {
         // Check for elemental reaction
-        const reactionFound = this.applyReaction(newElement);
-        if (reactionFound.length > 0) {
-            console.log(reactionFound);
-            return reactionFound;
+        const reactionsFound = this.applyReaction(newElement);
+        if (reactionsFound.length > 0) {
+            console.log(reactionsFound);
+            return reactionsFound;
         }
 
         // Since no reaction occurred, add the new element as an aura
@@ -71,7 +72,9 @@ export class Target {
         this.auras.push(newElement);
     }
 
-    private applyReaction(newElement: ElementalGauge): Reaction[] {
+    private applyReaction(newElement: ElementalGauge): ReactionLog[] {
+        const reactions: ReactionLog[] = [];
+
         if (this.auras.length < 1) {
             console.log('No sufficient auras for reaction');
             return [];
@@ -86,61 +89,60 @@ export class Target {
             sameAura.gaugeUnits = Math.max(sameAura.gaugeUnits, newElement.gaugeUnits * this.auraTax);
 
             // Since the aura is the same, no reaction occurs
-            return [new Reaction("Same Element", [sameAura.element.name], [sameAura.element.name], 0)];
+            return [new ReactionLog(new Reaction("Same Element", [sameAura.element.name], [sameAura.element.name], 0), sameAura, newElement)];
         }
 
         // React with existing aura and new aura
-        let reactionLog = 'Reactions Occurred:';
-        let i = 0;
-
-        const reactions : Reaction[] = [];
-        while (i < this.auras.length) {
-            const aura = this.auras[i];
-            i++; // Increment i before removing auras
-
-            const reaction = elementalReactions.find(reaction =>
+        let reaction = elementalReactions.find(reaction =>
+            this.auras.filter(aura =>
                 reaction.auraElementName.includes(aura.element.name) &&
-                reaction.appliedElementName.includes(newElement.element.name)
-            );
+                reaction.appliedElementName.includes(newElement.element.name)).length > 0
+        );
 
-            if (reaction) {
-                reactions.push(reaction);
-                reactionLog += `\n${reaction.name} (${reaction.coefficient}R), ${aura.element.name} (${aura.gaugeUnits}U) + ${newElement.element.name} (${newElement.gaugeUnits}U).`;
-
-                // Do reaction
-                const remaining = reaction.react(this, aura, newElement);
-
-                // Remaining aura is gone.
-                if (remaining <= floatPrecision) {
-                    // Update reaction gauge for future reactions (Add a negative number)
-                    if (reaction.coefficient == Infinity){
-                        newElement.gaugeUnits = 0;
-                    }
-                    else if (reaction.coefficient != 0) { //TODO: account for non strong and weak-side reactions like swirl
-                        newElement.gaugeUnits += remaining / reaction.coefficient;
-                    } else {
-                        // Non strong and weak-side reactions
-                        newElement.gaugeUnits += remaining;
-                    }
-
-                    this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
-                    i = 0; // Reset i to restart for new auras
-                } else {
-                    // Only one reaction, reacting element couldn't react through the aura
-                    break;
+        while (reaction) {
+            console.log(reaction);
+            const aura = this.auras.find(aura => {
+                if (!reaction) {
+                    return false;
                 }
+                return reaction.auraElementName.includes(aura.element.name) && reaction.appliedElementName.includes(newElement.element.name)
+            });
+            if (!aura) {
+                break;
             }
+            reactions.push(new ReactionLog(reaction, aura, newElement));
+
+            // Do reaction with aura and new element that was applied
+            const remaining = reaction.react(this, aura, newElement);
+
+            // Remaining aura is gone and there is still more units to react with.
+            if (remaining <= floatPrecision && newElement.gaugeUnits > floatPrecision) {
+                // Update reaction gauge for future reactions (Add a negative number)
+                if (reaction.coefficient == Infinity) {
+                    newElement.gaugeUnits = 0;
+                }
+                else if (reaction.coefficient != 0) { //TODO: account for non strong and weak-side reactions like swirl
+                    newElement.gaugeUnits += remaining / reaction.coefficient;
+                } else {
+                    // Non strong and weak-side reactions
+                    newElement.gaugeUnits += remaining;
+                }
+                this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
+            } else {
+                // Only one reaction, reacting element couldn't react through the aura
+                break;
+            }
+
+            // Find possibly next reaction or end while loop
+            reaction = elementalReactions.find(reaction =>
+                this.auras.filter(aura =>
+                    reaction.auraElementName.includes(aura.element.name) &&
+                    reaction.appliedElementName.includes(newElement.element.name)).length > 0
+            );
         }
 
         // Remove depleted auras
         this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
-
-        // Logging
-        reactionLog += `\nRemaining Gauges:`;
-        this.auras.forEach(aura => {
-            reactionLog += `\n${aura.element.name} (${aura.gaugeUnits}U)`;
-        });
-        console.log(reactionLog);
 
         return reactions;
     }
