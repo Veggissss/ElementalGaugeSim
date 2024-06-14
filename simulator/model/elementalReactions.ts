@@ -40,7 +40,7 @@ export const elementalReactions: Reaction[] = [
     new Reaction('Swirl', ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], ['Anemo'], 0.5),
     new Reaction('Swirl', ['Anemo'], ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], 0.5), //Bosses can have permanent anemo aura
 
-    new QuickenReaction('Quicken Spread', ['Electro'], ['Dendro'], 0),
+    new QuickenReaction('Quicken Spread', ['Quicken','Electro'], ['Dendro'], 0),
     new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 0),
 
     new BurningReaction('Burning', ['Pyro'], ['Quicken', 'Dendro'], 0),
