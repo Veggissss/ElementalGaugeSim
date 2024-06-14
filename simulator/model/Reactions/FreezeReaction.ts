@@ -7,17 +7,17 @@ export class FreezeReaction extends Reaction {
 
     override react(target: Target, auraElement: ElementalGauge, appliedElement: ElementalGauge): number {
         // https://library.keqingmains.com/evidence/combat-mechanics/elemental-effects/transformative-reactions#freeze-resistance-correction
-        const frozenGauge = 2 * Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits * target.auraTax);
+        const frozenGauge = 2 * Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits);
         const frozenDurationSeconds = 2 * Math.sqrt(5 * frozenGauge * (1 - target.freezeResist) + 4) - 4;
 
         // Add frozen aura and apply reacting element as an aura
         const existingFrozenAura = target.auras.find(aura => aura.element.name == 'Frozen');
         if (existingFrozenAura) {
             existingFrozenAura.gaugeUnits = frozenGauge;
-            existingFrozenAura.decayRate = (frozenGauge / frozenDurationSeconds);
+            existingFrozenAura.decayRate = (frozenDurationSeconds / frozenGauge);
         }
         else{
-            target.auras.unshift(new ElementalGauge(new ElementType('Frozen'), frozenGauge, (frozenGauge / frozenDurationSeconds)));
+            target.auras.unshift(new ElementalGauge(new ElementType('Frozen'), frozenGauge, (frozenDurationSeconds / frozenGauge)));
         }
         target.addElementAsAura(appliedElement);
 

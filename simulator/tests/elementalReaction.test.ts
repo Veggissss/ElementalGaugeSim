@@ -1,11 +1,11 @@
-import { ElementalGauge } from "../model/Elements/ElementalGauge";
-import { ElementType } from "../model/Elements/ElementType";
-import { Target } from "../model/Target";
+import { ElementalGauge } from '../model/Elements/ElementalGauge';
+import { ElementType } from '../model/Elements/ElementType';
+import { Target } from '../model/Target';
 
 describe('superconduct elemental reaction', () => {
     const target = new Target();
     test('applying 2U of cryo', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2))
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2));
     
         let aura = target.auras[0];
         expect(aura.gaugeUnits).toBeCloseTo(1.6); // 2U * 0.8 = 1.6U
@@ -69,16 +69,20 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
     const target = new Target();
 
     test('Adding 2U electro to a target with 1U dendro causes a spread quicken reaction', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
 
         // Apply electro
-        target.applyElement(new ElementalGauge(new ElementType('Electro'), 2))
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
 
-        expect(target.auras.find(aura => aura.element.name == "Quicken")).toBeDefined();
+        // Leads to a quicken aura
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
 
-        // The underlying auras should stay
-        expect(target.auras.find(aura => aura.element.name == "Electro")).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == "Dendro")).toBeDefined();
+        expect(target.auras.find(aura => aura.element.name == 'Electro')).not.toBeDefined();
+        expect(target.auras.find(aura => aura.element.name == 'Dendro')).not.toBeDefined();
+
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
+        expect(target.auras.find(aura => aura.element.name == 'Electro')).toBeDefined();
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
     })
 })
 
@@ -86,13 +90,13 @@ describe('Adding electro and hydro to a target causes an electro-charge reaction
     const target = new Target();
 
     test('Adding 1U electro to a target with 1U hydro removes 0.4U/s. Ticking immediately once applied and then once every second.', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
 
         // Apply electro
-        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
 
-        let electroAura = target.auras.find(aura => aura.element.name == "Electro");
-        let hydroAura = target.auras.find(aura => aura.element.name == "Hydro");
+        let electroAura = target.auras.find(aura => aura.element.name == 'Electro');
+        let hydroAura = target.auras.find(aura => aura.element.name == 'Hydro');
         
         expect(electroAura).toBeDefined();
         expect(hydroAura).toBeDefined();
@@ -105,8 +109,8 @@ describe('Adding electro and hydro to a target causes an electro-charge reaction
         target.timeStep(1);
 
         // Check that both auras are removed
-        electroAura = target.auras.find(aura => aura.element.name == "Electro");
-        hydroAura = target.auras.find(aura => aura.element.name == "Hydro");
+        electroAura = target.auras.find(aura => aura.element.name == 'Electro');
+        hydroAura = target.auras.find(aura => aura.element.name == 'Hydro');
 
         expect(electroAura).not.toBeDefined();
         expect(hydroAura).not.toBeDefined();
@@ -117,21 +121,21 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
     const target = new Target();
 
     test('A burning aura with 2U and the underlying dendro aura should have a decay rate of 2.5s/U', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
-        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
 
         const burningAura = target.auras.find(aura => aura.element.name == 'Burning');
         expect(burningAura).toBeDefined();
         expect(burningAura?.gaugeUnits).toBe(2);
 
         const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
-        expect(dendroAura).toBeDefined()
-        expect(dendroAura?.decayRate).toBe(2.5)
+        expect(dendroAura).toBeDefined();
+        expect(dendroAura?.decayRate).toBe(2.5);
     })
 
     test('A burning aura caused by adding 1.5U dendro and 1U pyro should last for 3 seconds.', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1.5))
-        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1.5));
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
 
         // Last for at least 3 seconds
         target.timeStep(2);
@@ -164,18 +168,18 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
     })
 
     test('An extinguished burning aura results in dendro which can be reached by a strong reactor', () => {
-        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1))
-        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1))
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
 
         target.timeStep(1);
         
         // Extinguish burning aura and react with underlying dendro
-        const reactions = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2))
+        const reactions = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
         
         // See burning reacted
-        expect(reactions.find(reaction => reaction.name === "Vaporize")).toBeTruthy();
+        expect(reactions.find(reaction => reaction.name === 'Vaporize')).toBeTruthy();
 
         // Check that reverse bloom occurred through the burning aura
-        expect(reactions.find(reaction => reaction.name === "Reverse Bloom")).toBeTruthy();
+        expect(reactions.find(reaction => reaction.name === 'Reverse Bloom')).toBeTruthy();
     })
 })
