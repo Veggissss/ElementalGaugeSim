@@ -15,6 +15,7 @@ import { ReactionLog } from '../../../simulator/model/Reactions/ReactionLog';
 
 export const TargetComponent = () => {
     const [units, setUnits] = useState(1 as number);
+    const [freezeRes, setFreezeRes] = useState(0 as number);
     const [time, setTime] = useState(1 as number);
     const [target, setTarget] = useState(new Target());
     const [reactions, setReactions] = useState([] as ReactionLog[]);
@@ -76,6 +77,20 @@ export const TargetComponent = () => {
         }
     }
 
+    const handleFreezeChange = (event: Event, value: number | number[], activeThumb: number) => {
+        if (typeof value === 'number') {
+            setFreezeRes(value);
+        } else if (Array.isArray(value)) {
+            setFreezeRes(value[0]);
+        }
+
+        const newTarget = new Target();
+        Object.assign(newTarget, target);
+        newTarget.freezeResist = freezeRes;
+
+        setTarget(newTarget);
+    }
+
     const renderReactionImages = () => {
         const elementImages: { [key: string]: string } = {};
         elementNames.forEach((element) => elementImages[element] = `/Element_${element}.png`);
@@ -127,7 +142,7 @@ export const TargetComponent = () => {
 
             <div>
                 <h2>Applied Element Unit:</h2>
-                <Box style = {{ width: 200 }}>
+                <Box style={{ width: 200 }}>
                     <Slider
                         value={units}
                         onChange={handleUnitsChange}
@@ -150,25 +165,43 @@ export const TargetComponent = () => {
                         ))
                     }
                 </Grid>
-                
+
                 <br />
-                <div>
-                    <h2>Simulate Time:</h2>
-                    <Box style ={{ width: 200 }}>
-                        <Slider
-                            value={time}
-                            onChange={handleTimeChange}
-                            min={0}
-                            max={8}
-                            step={0.1}
-                            aria-label="Default"
-                            valueLabelDisplay="auto"
-                            style={{ marginLeft: '8px' }}
-                        />
-                    </Box>
-                    <Button variant="contained" onClick={() =>
-                        handleTimeStep()}>Time Step {time.toFixed(1)} seconds
-                    </Button>
+                <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <div>
+                        <h2>Simulate Time:</h2>
+                        <Box style={{ width: 200 }}>
+                            <Slider
+                                value={time}
+                                onChange={handleTimeChange}
+                                min={0}
+                                max={8}
+                                step={0.1}
+                                aria-label="Default"
+                                valueLabelDisplay="auto"
+                                style={{ marginLeft: '8px' }}
+                            />
+                        </Box>
+                        <Button variant="contained" onClick={() =>
+                            handleTimeStep()}>Time Step {time.toFixed(1)} seconds
+                        </Button>
+                    </div>
+
+                    <div>
+                        <h2>Enemy Freeze Resistance:</h2>
+                        <Box style={{ width: 200 }}>
+                            <Slider
+                                value={freezeRes}
+                                onChange={handleFreezeChange}
+                                min={0}
+                                max={1}
+                                step={0.1}
+                                aria-label="Default"
+                                valueLabelDisplay="auto"
+                                style={{ marginLeft: '8px' }}
+                            />
+                        </Box>
+                    </div>
                 </div>
             </div>
 
