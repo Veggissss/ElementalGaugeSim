@@ -53,7 +53,7 @@ export const TargetComponent = () => {
     function getElementImages() : { [key: string]: string } {
         const elementImages: { [key: string]: string } = {};
 
-        elementNames.forEach((element) => elementImages[element] = `%PUBLIC_URL%/images/Element_${element}.png`);
+        elementNames.forEach((element) => elementImages[element] = `/images/Element_${element}.png`);
 
         return elementImages;
     }

@@ -1,14 +1,18 @@
-# Elemental Gauge Sim
-Simulates how the different elements react in Genshin Impact, based on [Elemental Gauge Theory](https://library.keqingmains.com/combat-mechanics/elemental-effects/elemental-gauge-theory).
+# Elemental Gauge Simulator (EGS)
+Simulates how the different elements from Genshin react based on [Elemental Gauge Theory](https://library.keqingmains.com/combat-mechanics/elemental-effects/elemental-gauge-theory).
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Hosted website
+The simulator is hosted on GitHub Pages. You can access it [here](https://veggissss.github.io/ElementalGaugeSim/).
 
-## Getting Started
+## Running locally
+To get started, follow these steps:
 
-First, run the development server:
+1. Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-```bash
-npm run dev
-```
+2. Open your browser and go to [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Simulator
+The simulator, located in `src/simulator`, was initially developed using Jest for testing. Later, the React website was built on top of it.
