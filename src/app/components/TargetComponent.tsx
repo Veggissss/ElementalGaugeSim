@@ -52,8 +52,14 @@ export const TargetComponent = () => {
 
     function getElementImages() : { [key: string]: string } {
         const elementImages: { [key: string]: string } = {};
+        
+        console.log(process.env.PUBLIC_URL)
+        let filePath = "";
+        if (process.env.PUBLIC_URL){
+            filePath = process.env.PUBLIC_URL;
+        }
 
-        elementNames.forEach((element) => elementImages[element] = `/images/Element_${element}.png`);
+        elementNames.forEach((element) => elementImages[element] = filePath + `/images/Element_${element}.png`);
 
         return elementImages;
     }
