@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "types": ["jest"],
+    },
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+            "**/__tests__/**/*.ts",
+            "**/?(*.)+(spec|test).ts"
+        ],
+        "moduleFileExtensions": [
+            "ts",
+            "js",
+            "json"
+        ],
+        "transform": {
+            "^.+\\.ts$": "ts-jest"
+        }
+    }
+}
