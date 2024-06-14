@@ -1,11 +1,11 @@
 {
-  "name": "react-app",
-  "version": "0.1.0",
+  "name": "elemental_gauge_simulator",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npx serve@latest out",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,8 +14,7 @@
     "@mui/material": "^5.15.20",
     "next": "14.2.3",
     "react": "^18",
-    "react-dom": "^18",
-    "sharp": "^0.33.4"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -4,13 +4,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Button from '@mui/material/Button';
 
-import { ElementName, elementNames } from '../../../simulator/model/Elements/ElementName';
-import { ElementalGauge } from '../../../simulator/model/Elements/ElementalGauge';
-import { ElementType } from '../../../simulator/model/Elements/ElementType';
-import { Target } from '../../../simulator/model/Target';
+import { ElementName, elementNames } from '../../simulator/model/Elements/ElementName';
+import { ElementalGauge } from '../../simulator/model/Elements/ElementalGauge';
+import { ElementType } from '../../simulator/model/Elements/ElementType';
+import { Target } from '../../simulator/model/Target';
+import { ReactionLog } from '../../simulator/model/Reactions/ReactionLog';
+
 import Slider from '@mui/material/Slider';
 import { Box, Grid, Typography } from '@mui/material';
-import { ReactionLog } from '../../../simulator/model/Reactions/ReactionLog';
 
 
 export const TargetComponent = () => {
