@@ -16,7 +16,7 @@ export class BurningReaction extends Reaction {
         target.addElementAsAura(appliedElement);
         
         // Set dendro aura to 0.4U/s decay rate
-        const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro' || aura.element.name == 'Quicken');
         if (dendroAura){
             //TODO refresh dendro gauge?
             dendroAura.decayRate = removalDecay;
@@ -33,7 +33,7 @@ export class BurningReaction extends Reaction {
         const burningAura = target.auras.find(aura => aura.element.name == 'Burning');
 
         if (burningAura) {
-            const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+            const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro' || aura.element.name == 'Quicken');
             if (dendroAura) {
                 // Reapply pyro aura every 2s
                 if (burningAura.time >= 2) {
