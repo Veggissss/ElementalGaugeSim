@@ -134,12 +134,12 @@ export const TargetComponent = () => {
             <Typography
                 variant="h1"
                 gutterBottom
-                style={{ fontSize: 'calc(1.5em + 2vw)' }} // Adjust the value as needed
+                style={{ fontSize: 'calc(1.2em + 2vw)' }} // Adjust the value as needed
             >
                 Elemental Gauge Simulator
             </Typography>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: "1em" }}>
                 <Box minHeight={250} maxHeight={325}>
                     <h2>Element Auras:</h2>
                     <div>{renderElementImages()}</div>
@@ -152,9 +152,9 @@ export const TargetComponent = () => {
             </div>
 
 
-            <div>
+            <div style={{ paddingLeft: "1em", paddingRight: "1em"}}>
                 <h2>Applied Element Unit:</h2>
-                <Box style={{ width: 200 }}>
+                <Box style={{ width: '20vw' }}>
                     <Slider
                         value={units}
                         onChange={handleUnitsChange}
@@ -182,7 +182,7 @@ export const TargetComponent = () => {
                 <div style={{display: "flex", justifyContent: "space-between"}}>
                     <div>
                         <h2>Simulate Time:</h2>
-                        <Box style={{ width: 200 }}>
+                        <Box style={{ width: '20vw' }}>
                             <Slider
                                 value={time}
                                 onChange={handleTimeChange}
@@ -200,8 +200,8 @@ export const TargetComponent = () => {
                     </div>
 
                     <div>
-                        <h2>Enemy Freeze Resistance:</h2>
-                        <Box style={{ width: 200 }}>
+                        <h2>Freeze Resistance:</h2>
+                        <Box style={{ width: '20vw' }}>
                             <Slider
                                 value={freezeRes}
                                 onChange={handleFreezeChange}
@@ -218,7 +218,7 @@ export const TargetComponent = () => {
             </div>
 
 
-            <div style={{ display: "flex", justifyContent: "center", padding: "2em" }}>
+            <div style={{ display: "flex", justifyContent: "center", padding: "1em" }}>
                 <Button variant="outlined" color='error' onClick={() =>
                     handleRemoveAuras()}>Remove Auras
                 </Button>
