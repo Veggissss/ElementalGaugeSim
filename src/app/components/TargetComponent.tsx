@@ -53,10 +53,9 @@ export const TargetComponent = () => {
     function getElementImages() : { [key: string]: string } {
         const elementImages: { [key: string]: string } = {};
         
-        console.log(process.env.PUBLIC_URL)
         let filePath = "";
-        if (process.env.PUBLIC_URL){
-            filePath = process.env.PUBLIC_URL;
+        if (process.env.GITHUB_PAGES){
+            filePath = "https://veggissss.github.io/ElementalGaugeSim";
         }
 
         elementNames.forEach((element) => elementImages[element] = filePath + `/images/Element_${element}.png`);
