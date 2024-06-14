@@ -55,9 +55,9 @@ export const TargetComponent = () => {
 
         let filePath = "/";
         if (process.env.PUBLIC_URL){
-            filePath = process.env.PUBLIC_URL;
+            filePath = process.env.PUBLIC_URL+"/ElementalGaugeSim";
         }
-        elementNames.forEach((element) => elementImages[element] = filePath + `images/Element_${element}.png`);
+        elementNames.forEach((element) => elementImages[element] = filePath + `/images/Element_${element}.png`);
 
         return elementImages;
     }
