@@ -18,6 +18,7 @@ import { ElementName } from '../simulator/model/Elements/ElementName';
 import { ElementType } from '../simulator/model/Elements/ElementType';
 import { ReactionLog } from '../simulator/model/Reactions/ReactionLog';
 import { Target } from '../simulator/model/Target';
+import TimeButton from "./components/TimeButton";
 
 export default function Page() {
     const [units, setUnits] = useState(1);
@@ -94,33 +95,51 @@ export default function Page() {
     }
 
     return (
-        <div>
-            <Typography
-                variant="h1"
-                gutterBottom
-                style={{ fontSize: 'calc(1.2em + 2vw)' }}
-            >
-                Elemental Gauge Simulator
-            </Typography>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <div style={{ flex: 1 }}>
+                <Typography
+                    variant="h1"
+                    gutterBottom
+                    style={{ fontSize: 'calc(1.2em + 2vw)', paddingTop: "1wv" }}
+                >
+                    Elemental Gauge Simulator
+                </Typography>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: "1em" }}>
-                <ElementAuras target={target} />
-                <ReactionsOccurred reactions={reactions} />
-            </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: "1em" }}>
+                    <ElementAuras target={target} />
+                    <ReactionsOccurred reactions={reactions} />
+                </div>
 
-            <div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
-                <ElementUnitSlider units={units} handleUnitsChange={handleUnitsChange} />
-                <ElementButtons units={units} elementColorMap={elementColorMap} handleAddElement={handleAddElement} />
-                <br />
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <TimeSlider time={time} handleTimeChange={handleTimeChange} handleTimeStep={handleTimeStep} />
-                    <FreezeResistSlider freezeRes={freezeRes} handleFreezeChange={handleFreezeChange} />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <h2>Gauge Unit:</h2>
+                    <ElementUnitSlider units={units} handleUnitsChange={handleUnitsChange} />
+                </div>
+
+                <div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
+                    <ElementButtons units={units} elementColorMap={elementColorMap} handleAddElement={handleAddElement} />
+                    <br />
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div>
+                            <h2>Simulate Time:</h2>
+                            <TimeSlider time={time} handleTimeChange={handleTimeChange} />
+                        </div>
+                        <div>
+                            <h2>Freeze Res:</h2>
+                            <FreezeResistSlider freezeRes={freezeRes} handleFreezeChange={handleFreezeChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <TimeButton time={time} handleTimeStep={handleTimeStep} />
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "center", padding: "1em" }}>
+                    <RemoveAurasButton handleRemoveAuras={handleRemoveAuras} />
                 </div>
             </div>
 
-            <RemoveAurasButton handleRemoveAuras={handleRemoveAuras} />
-
-            <footer id='footer' style={{ textAlign: "center" }}>
+            <footer id='footer' style={{ textAlign: "center", marginTop: "auto" }}>
                 <p><a href="https://github.com/Veggissss/ElementalGaugeSim">GitHub Repository</a></p>
                 <p><a href="https://github.com/Veggissss/ElementalGaugeSim/blob/main/LICENSE">&copy; MIT 2024</a></p>
             </footer>

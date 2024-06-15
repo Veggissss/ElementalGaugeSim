@@ -13,8 +13,7 @@ class ElementUnitSlider extends Component<ElementUnitSliderProps> {
         const { units, handleUnitsChange } = this.props;
 
         return (
-            <Box style={{ width: '20vw' }}>
-                <h2>Applied Element Unit:</h2>
+            <Box style={{ width: '64vw' }}>
                 <Slider
                     value={units}
                     onChange={handleUnitsChange}
@@ -23,7 +22,6 @@ class ElementUnitSlider extends Component<ElementUnitSliderProps> {
                     step={0.5}
                     aria-label="Default"
                     valueLabelDisplay="auto"
-                    style={{ marginLeft: '8px' }}
                 />
             </Box>
         );
