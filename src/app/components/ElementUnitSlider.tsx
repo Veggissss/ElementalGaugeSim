@@ -14,10 +14,11 @@ class ElementUnitSlider extends Component<ElementUnitSliderProps> {
 
         return (
             <Box style={{ width: '64vw' }}>
-                <Slider
+                <Slider id="element-unit-slider"
                     value={units}
                     onChange={handleUnitsChange}
-                    min={0}
+                    marks
+                    min={0.5}
                     max={8}
                     step={0.5}
                     aria-label="Default"

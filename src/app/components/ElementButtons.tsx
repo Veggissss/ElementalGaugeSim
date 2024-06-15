@@ -18,7 +18,7 @@ class ElementButtons extends React.Component<ElementButtonsProps> {
             <Grid container spacing={1} justifyContent="center">
                 {elementNames.slice(0, 7).map((element, index) => (
                     <Grid item xs={5} sm={3} md={2} lg={true} key={index}>
-                        <Button key={element} variant="contained" style={{ background: elementColorMap.get(element), minWidth: 140 }} onClick={() => handleAddElement(element)}>
+                        <Button id={`add-${element.toLowerCase()}-btn`} key={element} variant="contained" style={{ background: elementColorMap.get(element), minWidth: 140 }} onClick={() => handleAddElement(element)}>
                             {element} {units.toFixed(1)}U
                         </Button>
                     </Grid>

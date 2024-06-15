@@ -14,9 +14,10 @@ class TimeSlider extends React.Component<TimeSliderProps> {
 
         return (
             <Box style={{ width: '32vw' }}>
-                <Slider
+                <Slider id="time-slider"
                     value={time}
                     onChange={handleTimeChange}
+                    marks
                     min={0.1}
                     max={8}
                     step={0.1}

@@ -14,9 +14,10 @@ class FreezeResistSlider extends React.Component<FreezeResistSliderProps> {
 
         return (
             <Box style={{ width: '32vw' }}>
-                <Slider
+                <Slider id = "freeze-resist-slider"
                     value={freezeRes}
                     onChange={handleFreezeChange}
+                    marks
                     min={0}
                     max={1}
                     step={0.1}

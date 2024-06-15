@@ -13,7 +13,7 @@ class TimeButton extends React.Component<TimeButtonProps> {
         const { time, handleTimeStep } = this.props;
 
         return (
-            <Button variant="contained" onClick={() => handleTimeStep()}>
+            <Button id="time-btn" variant="contained" onClick={() => handleTimeStep()}>
                 Time Step {time.toFixed(1)} seconds
             </Button>
         );

@@ -12,7 +12,7 @@ class RemoveAurasButton extends React.Component<RemoveAurasButtonProps> {
         const { handleRemoveAuras } = this.props;
 
         return (
-            <Button variant="outlined" color='error' onClick={() => handleRemoveAuras()}>
+            <Button id="remove-auras-btn" variant="outlined" color='error' onClick={() => handleRemoveAuras()}>
                 Remove Auras
             </Button>
         );

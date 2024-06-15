@@ -28,7 +28,7 @@ class ElementAuras extends Component<ElementAurasProps> {
         return (
             <Box minHeight={250} maxHeight={325}>
                 <h2>Element Auras:</h2>
-                <div>
+                <div id='element-auras'>
                     {target.auras.map((aura, index) => (
                         <div key={index}>
                             <h3>{aura.gaugeUnits.toFixed(2)}U {aura.element.name} Decay: {aura.decayRate.toFixed(3)}s/U</h3>
