@@ -13,7 +13,7 @@ class FreezeResistSlider extends React.Component<FreezeResistSliderProps> {
         const { freezeRes, handleFreezeChange } = this.props;
 
         return (
-            <Box style={{ width: '32vw' }}>
+            <Box style={{ width: '20vw' }}>
                 <Slider id = "freeze-resist-slider"
                     value={freezeRes}
                     onChange={handleFreezeChange}

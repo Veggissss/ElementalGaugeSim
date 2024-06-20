@@ -13,7 +13,7 @@ class TimeSlider extends React.Component<TimeSliderProps> {
         const { time, handleTimeChange } = this.props;
 
         return (
-            <Box style={{ width: '32vw' }}>
+            <Box style={{ width: '20vw' }}>
                 <Slider id="time-slider"
                     value={time}
                     onChange={handleTimeChange}

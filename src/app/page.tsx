@@ -110,23 +110,25 @@ export default function Page() {
                     <ReactionsOccurred reactions={reactions} />
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: "2em", paddingRight: "2em" }}>
                     <h2>Gauge Unit:</h2>
                     <ElementUnitSlider units={units} handleUnitsChange={handleUnitsChange} />
                 </div>
 
                 <div style={{ paddingLeft: "1em", paddingRight: "1em" }}>
                     <ElementButtons units={units} elementColorMap={elementColorMap} handleAddElement={handleAddElement} />
-                    <br />
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div>
-                            <h2>Simulate Time:</h2>
-                            <TimeSlider time={time} handleTimeChange={handleTimeChange} />
-                        </div>
-                        <div>
-                            <h2>Freeze Res:</h2>
-                            <FreezeResistSlider freezeRes={freezeRes} handleFreezeChange={handleFreezeChange} />
-                        </div>
+                </div>
+                
+                <br />
+                
+                <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "2em", paddingRight: "2em" }}>
+                    <div>
+                        <h2>Simulate Time:</h2>
+                        <TimeSlider time={time} handleTimeChange={handleTimeChange} />
+                    </div>
+                    <div>
+                        <h2>Freeze Res:</h2>
+                        <FreezeResistSlider freezeRes={freezeRes} handleFreezeChange={handleFreezeChange} />
                     </div>
                 </div>
 

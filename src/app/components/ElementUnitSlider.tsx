@@ -13,7 +13,7 @@ class ElementUnitSlider extends Component<ElementUnitSliderProps> {
         const { units, handleUnitsChange } = this.props;
 
         return (
-            <Box style={{ width: '64vw' }}>
+            <Box style={{ width: '50vw' }}>
                 <Slider id="element-unit-slider"
                     value={units}
                     onChange={handleUnitsChange}
