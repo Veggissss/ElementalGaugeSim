@@ -23,7 +23,6 @@ export class Target {
         // Check for elemental reaction
         const reactionsFound = this.applyReaction(newElement);
         if (reactionsFound.length > 0) {
-            console.log(reactionsFound);
             return reactionsFound;
         }
 
@@ -99,7 +98,7 @@ export class Target {
                 reaction.appliedElementName.includes(newElement.element.name)).length > 0
         );
 
-        while (reaction) {
+        while (reaction != undefined) {
             console.log(reaction);
             const aura = this.auras.find(aura => {
                 if (!reaction) {
@@ -117,27 +116,33 @@ export class Target {
 
             // Remaining aura is gone and there is still more units to react with.
             if (remaining <= floatPrecision && newElement.gaugeUnits > floatPrecision) {
-                // Update reaction gauge for future reactions (Add a negative number)
+                // Update reaction gauge for future reactions
                 if (reaction.coefficient == Infinity) {
                     newElement.gaugeUnits = 0;
                 }
-                else if (reaction.coefficient != 0) { //TODO: account for non strong and weak-side reactions like swirl
+                else if (reaction.coefficient != 0) {
+                    // Add a negative number
                     newElement.gaugeUnits += remaining / reaction.coefficient;
-                } else {
-                    // Non strong and weak-side reactions
+                }
+                else {
+                    // Non strong and weak-side reactions (Add a negative number)
                     newElement.gaugeUnits += remaining;
                 }
-                this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
-            } else {
+            }
+            else {
                 // Only one reaction, reacting element couldn't react through the aura
                 break;
             }
 
             // Find possibly next reaction or end while loop
             reaction = elementalReactions.find(reaction =>
+                // Prevent same reaction from happening multiple times on same application
+                reactions.filter(reactionLog => reactionLog.name == reaction.name).length == 0 &&
+
                 this.auras.filter(aura =>
                     reaction.auraElementName.includes(aura.element.name) &&
-                    reaction.appliedElementName.includes(newElement.element.name)).length > 0
+                    reaction.appliedElementName.includes(newElement.element.name)
+                ).length > 0
             );
         }
 
