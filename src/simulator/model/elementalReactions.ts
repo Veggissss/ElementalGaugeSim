@@ -36,8 +36,8 @@ export const elementalReactions: Reaction[] = [
     new ElectroChargedReaction('Electro-Charged', ['Electro'], ['Hydro'], 0),
     new ElectroChargedReaction('Electro-Charged', ['Hydro'], ['Electro'], 0),
 
-    new QuickenReaction('Quicken Spread', ['Quicken','Electro'], ['Dendro'], 0),
-    new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 0),
+    new QuickenReaction('Quicken Spread', ['Quicken','Electro'], ['Dendro'], 1),
+    new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 1),
 
     new BurningReaction('Burning', ['Pyro'], ['Quicken', 'Dendro'], 0),
     new BurningReaction('Burning', ['Quicken', 'Dendro'], ['Pyro'], 0),

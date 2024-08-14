@@ -216,4 +216,22 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         // Check that reverse bloom occurred through the burning aura
         expect(reactions.find(reaction => reaction.name === 'Reverse Bloom')).toBeTruthy();
     })
+
+    test('An extinguished burning aura results in dendro which can NOT be reached by a weak reactor element (1U)', () => {
+        const target = new Target();
+
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+
+        target.timeStep(1);
+
+        // Extinguish burning aura and react with underlying dendro
+        const reactions = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+
+        // See burning reacted
+        expect(reactions.find(reaction => reaction.name === 'Vaporize')).toBeTruthy();
+
+        // Check that reverse bloom occurred through the burning aura
+        expect(reactions.find(reaction => reaction.name === 'Reverse Bloom')).not.toBeTruthy();
+    })
 })

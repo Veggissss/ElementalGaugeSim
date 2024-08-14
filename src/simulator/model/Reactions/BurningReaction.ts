@@ -10,7 +10,7 @@ export class BurningReaction extends Reaction {
 
     override react(target: Target, auraElement: ElementalGauge, appliedElement: ElementalGauge): number {
         // Add 2U of burning aura with 0 decay rate
-        target.auras.unshift(new ElementalGauge(new ElementType('Burning'), 2, 0));
+        target.addElementAsAura(new ElementalGauge(new ElementType('Burning'), (2/target.auraTax), 0), true);
 
         // Add reacting element as aura, can be dendro or pyro
         target.addElementAsAura(appliedElement);
@@ -18,7 +18,6 @@ export class BurningReaction extends Reaction {
         // Set dendro aura to 0.4U/s decay rate
         const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro' || aura.element.name == 'Quicken');
         if (dendroAura){
-            //TODO refresh dendro gauge?
             dendroAura.decayRate = removalDecay;
         }
         

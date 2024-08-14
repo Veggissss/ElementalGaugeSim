@@ -9,7 +9,6 @@ export const ReactionNames = [
     'Electro-Charged', 'Burning',
     'Swirl', 'Crystallize',
     'Quicken Aggravate', 'Quicken Spread',
-    'Same Element'
 ] as const;
 
 export type ReactionName = typeof ReactionNames[number];
