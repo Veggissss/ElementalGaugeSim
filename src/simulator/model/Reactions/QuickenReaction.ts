@@ -9,18 +9,22 @@ export class QuickenReaction extends Reaction {
         // https://library.keqingmains.com/combat-mechanics/elemental-effects/additive-reactions#quicken
         const quickenGauge = Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits);
         const quickenDurationSeconds = quickenGauge * 5 + 6;
-        console.log("Seconds of quicken: " + quickenDurationSeconds +"s U:"+ quickenGauge);
+        console.log("Seconds of quicken: " + quickenDurationSeconds + "s U:" + quickenGauge);
 
         // Apply element as underlying aura
         const excisingQuickenAura = target.auras.find(aura => aura.element.name === 'Quicken');
         if (excisingQuickenAura) {
             excisingQuickenAura.gaugeUnits = quickenGauge;
+
+            // Refresh quicken aura with applied dendro
+            if (appliedElement.element.name === 'Dendro') {
+                excisingQuickenAura.gaugeUnits = appliedElement.gaugeUnits * target.auraTax;
+            }
             target.addElementAsAura(appliedElement);
         }
-        else{
+        else {
             // Initial catalyze removes electro aura
             target.auras.unshift(new ElementalGauge(new ElementType('Quicken'), quickenGauge, (quickenDurationSeconds / quickenGauge)));
-
             target.auras = target.auras.filter(aura => aura.element.name !== 'Electro');
         }
 
