@@ -94,7 +94,7 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
 
 describe('Adding electro and dendro to a target causes a quicken reaction', () => {
 
-    test('Adding 2U electro to a target with 1U dendro causes a spread quicken reaction', () => {
+    test('Adding 2U electro to a target with 1U dendro causes a spread quicken reaction without resulting electro aura', () => {
         const target = new Target();
 
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
@@ -111,6 +111,69 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
         expect(target.auras.find(aura => aura.element.name == 'Electro')).toBeDefined();
         expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+    })
+
+    test('Adding 1U dendro to a target with 2U electro causes a spread quicken reaction with resulting electro aura', () => {
+        const target = new Target();
+
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+
+        // Leads to a quicken aura
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        expect(target.auras.find(aura => aura.element.name == 'Electro')).toBeDefined();
+
+        // No underlying dendro aura
+        expect(target.auras.find(aura => aura.element.name == 'Dendro')).not.toBeDefined();
+    })
+
+    test('Triggering a second quicken reaction refreshes the quicken aura if the gauge is larger', () => {
+        const target = new Target();
+
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        let quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        expect(quickenAura?.gaugeUnits).toBeCloseTo(0.8);
+
+        // Larger aura will refresh the quicken aura
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 2));
+        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        expect(quickenAura?.gaugeUnits).toBeCloseTo(1.6);
+
+        // Smaller aura will not refresh the quicken aura
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        expect(quickenAura?.gaugeUnits).toBeCloseTo(1.6);
+    })
+
+    test('Applying 2U with hydro to a quicken aura with underlying dendro results in a two bloom', () => {
+        const target = new Target();
+
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 2));
+        target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
+
+        // Leads to a quicken aura with underlying dendro aura
+        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        expect(target.auras.find(aura => aura.element.name == 'Dendro')).toBeDefined();
+
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+        let quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        let dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        expect(quickenAura).toBeDefined();
+        expect(dendroAura).toBeDefined();
+
+        // Should have the same gauge units in this scenario
+        expect(quickenAura?.gaugeUnits ?? 0).toBeCloseTo(dendroAura?.gaugeUnits ?? 0);
+
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        expect(quickenAura).not.toBeDefined();
+        expect(dendroAura).not.toBeDefined();
     })
 })
 

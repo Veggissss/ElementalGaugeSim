@@ -8,7 +8,8 @@ export const ReactionNames = [
     'Shatter', 'Freeze',
     'Electro-Charged', 'Burning',
     'Swirl', 'Crystallize',
-    'Quicken Aggravate', 'Quicken Spread',
+    'Quicken',
+    'Aggravate', 'Spread',
 ] as const;
 
 export type ReactionName = typeof ReactionNames[number];

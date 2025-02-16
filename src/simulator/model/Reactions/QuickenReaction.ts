@@ -7,29 +7,25 @@ export class QuickenReaction extends Reaction {
 
     override react(target: Target, auraElement: ElementalGauge, appliedElement: ElementalGauge): number {
         // https://library.keqingmains.com/combat-mechanics/elemental-effects/additive-reactions#quicken
-        const quickenGauge = Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits);
+        const quickenGauge = Math.min(auraElement.gaugeUnits, appliedElement.gaugeUnits * target.auraTax);
         const quickenDurationSeconds = quickenGauge * 5 + 6;
         console.log("Seconds of quicken: " + quickenDurationSeconds + "s U:" + quickenGauge);
 
-        // Apply element as underlying aura
-        const excisingQuickenAura = target.auras.find(aura => aura.element.name === 'Quicken');
-        if (excisingQuickenAura) {
-            excisingQuickenAura.gaugeUnits = quickenGauge;
-
-            // Refresh quicken aura with applied dendro
-            if (appliedElement.element.name === 'Dendro') {
-                excisingQuickenAura.gaugeUnits = appliedElement.gaugeUnits * target.auraTax;
+        // Add quicken aura to target
+        const quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        if (quickenAura) {
+            if (quickenAura.gaugeUnits < quickenGauge) {
+                quickenAura.gaugeUnits = quickenGauge;
+                quickenAura.decayRate = quickenDurationSeconds / quickenGauge;
+                quickenAura.originalGaugeUnits = quickenGauge;
+                quickenAura.time = 0;
             }
-            target.addElementAsAura(appliedElement);
-        }
-        else {
-            // Initial catalyze removes electro aura
+        } else {
             target.auras.unshift(new ElementalGauge(new ElementType('Quicken'), quickenGauge, (quickenDurationSeconds / quickenGauge)));
-            target.auras = target.auras.filter(aura => aura.element.name !== 'Electro');
         }
-
-        // Remove dendro aura as dendro is consumed by quicken
-        target.auras = target.auras.filter(aura => aura.element.name !== 'Dendro');
+        // Remove gauge units from auras
+        auraElement.react(this.coefficient, quickenGauge);
+        appliedElement.react(this.coefficient, quickenGauge);
 
         return auraElement.gaugeUnits;
     }

@@ -80,7 +80,7 @@ export class Target {
             if (insertAtBeginning) {
                 this.auras.unshift(newElement);
             }
-            else{
+            else {
                 this.auras.push(newElement);
             }
             console.log(`Adding ${newElement.element.name} with gauge ${newElement.gaugeUnits} to target.`)
@@ -99,26 +99,28 @@ export class Target {
                 reaction.auraElementName.includes(aura.element.name) &&
                 reaction.appliedElementName.includes(newElement.element.name)
             );
+            if (!aura) {
+                continue;
+            }
+            reactions.push(new ReactionLog(reaction, aura, newElement));
+            const remaining = reaction.react(this, aura, newElement);
+            console.log(`Reaction '${reaction.name}' occurred with '${aura.element.name}' and '${newElement.element.name}'. Remaining gauge units: '${remaining}'.`);
 
-            if (aura) {
-                reactions.push(new ReactionLog(reaction, aura, newElement));
-                const remaining = reaction.react(this, aura, newElement);
-                console.log(`Reaction '${reaction.name}' occurred with '${aura.element.name}' and '${newElement.element.name}'. Remaining gauge units: '${remaining}'.`);
-
-                if (remaining < 0 && newElement.gaugeUnits > 0) {
-                    if (reaction.coefficient == Infinity) {
-                        newElement.gaugeUnits = 0;
-                    }
-                    else if (reaction.coefficient != 0) {
-                        newElement.gaugeUnits += remaining / reaction.coefficient;
-                    }
-                    else {
-                        newElement.gaugeUnits += remaining;
-                    }
+            // If the reaction consumed all gauge units, stop checking for more reactions
+            if (remaining < 0 && newElement.gaugeUnits > 0) {
+                // Remaining gauge is a negative value so add it to the new element
+                if (reaction.coefficient == Infinity) {
+                    newElement.gaugeUnits = 0;
+                }
+                else if (reaction.coefficient != 0) {
+                    newElement.gaugeUnits += remaining / reaction.coefficient;
                 }
                 else {
-                    break;
+                    newElement.gaugeUnits += remaining;
                 }
+            }
+            else {
+                break;
             }
         }
 

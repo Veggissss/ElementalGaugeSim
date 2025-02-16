@@ -3,6 +3,8 @@ import { BurningReaction } from "./Reactions/BurningReaction";
 import { FreezeReaction } from "./Reactions/FreezeReaction";
 import { QuickenReaction } from "./Reactions/QuickenReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
+import { CatalyzeReaction } from "./Reactions/CatalyzeReaction";
+import { BloomReaction } from "./Reactions/BloomReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [
@@ -23,22 +25,25 @@ export const elementalReactions: Reaction[] = [
     new Reaction('Swirl', ['Anemo'], ['Burning', 'Pyro', 'Electro', 'Frozen', 'Cryo', 'Hydro'], 0.5), //Bosses can have permanent anemo aura
 
     new Reaction('Shatter', ['Frozen'], ['Geo'], Infinity),
-    
+
     new Reaction('Crystallize', ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], ['Geo'], 0.5),
     new Reaction('Crystallize', ['Geo'], ['Burning', 'Pyro', 'Cryo', 'Electro', 'Hydro'], 0.5), // Bosses can have permanent geo aura
 
     new FreezeReaction('Freeze', ['Cryo'], ['Hydro'], 1),
     new FreezeReaction('Freeze', ['Hydro'], ['Cryo'], 1),
-    
-    new Reaction('Bloom', ['Hydro'], ['Quicken', 'Dendro'], 2),
-    new Reaction('Reverse Bloom', ['Quicken', 'Dendro'], ['Hydro'], 0.5),
-    
+
+    new BloomReaction('Bloom', ['Hydro'], ['Quicken', 'Dendro'], 2),
+    new BloomReaction('Reverse Bloom', ['Quicken', 'Dendro'], ['Hydro'], 0.5),
+
     new ElectroChargedReaction('Electro-Charged', ['Electro'], ['Hydro'], 0),
     new ElectroChargedReaction('Electro-Charged', ['Hydro'], ['Electro'], 0),
 
-    new QuickenReaction('Quicken Spread', ['Quicken','Electro'], ['Dendro'], 1),
-    new QuickenReaction('Quicken Aggravate', ['Quicken', 'Dendro'], ['Electro'], 1),
-
     new BurningReaction('Burning', ['Pyro'], ['Quicken', 'Dendro'], 0),
     new BurningReaction('Burning', ['Quicken', 'Dendro'], ['Pyro'], 0),
+
+    new QuickenReaction('Quicken', ['Dendro'], ['Electro'], 1),
+    new QuickenReaction('Quicken', ['Electro'], ['Dendro'], 1),
+
+    new CatalyzeReaction('Spread', ['Quicken'], ['Dendro'], 0),
+    new CatalyzeReaction('Aggravate', ['Quicken'], ['Electro'], 0),
 ];
