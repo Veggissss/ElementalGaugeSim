@@ -16,7 +16,7 @@ export class FreezeReaction extends Reaction {
         const remainingAura = auraElement.gaugeUnits - (this.coefficient * appliedElement.gaugeUnits);
 
         // Add frozen aura and apply reacting element as an aura
-        const existingFrozenAura = target.auras.find(aura => aura.element.name == 'Frozen');
+        const existingFrozenAura = target.getElement('Frozen');
         if (existingFrozenAura) {
             existingFrozenAura.gaugeUnits = frozenGauge;
             existingFrozenAura.decayRate = (frozenDurationSeconds / frozenGauge);
@@ -26,7 +26,7 @@ export class FreezeReaction extends Reaction {
         }
        
         // Replace cryo aura with frozen aura
-        const cryoAura = target.auras.find(aura => aura.element.name == 'Cryo');
+        const cryoAura = target.getElement('Cryo');
         if (cryoAura) {
             cryoAura.gaugeUnits = 0;
         }

@@ -12,7 +12,7 @@ export class QuickenReaction extends Reaction {
         console.log("Seconds of quicken: " + quickenDurationSeconds + "s U:" + quickenGauge);
 
         // Add quicken aura to target
-        const quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        const quickenAura = target.getElement('Quicken');
         if (quickenAura) {
             if (quickenAura.gaugeUnits < quickenGauge) {
                 quickenAura.gaugeUnits = quickenGauge;

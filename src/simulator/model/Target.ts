@@ -1,3 +1,4 @@
+import { ElementName } from "./Elements/ElementName";
 import { ElementalGauge } from "./Elements/ElementalGauge";
 import { BurningReaction } from "./Reactions/BurningReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
@@ -85,6 +86,10 @@ export class Target {
             }
             console.log(`Adding ${newElement.element.name} with gauge ${newElement.gaugeUnits} to target.`)
         }
+    }
+
+    public getElement(elementName: ElementName): ElementalGauge | undefined {
+        return this.auras.find(aura => aura.element.name == elementName);
     }
 
     private applyReaction(newElement: ElementalGauge): ReactionLog[] {

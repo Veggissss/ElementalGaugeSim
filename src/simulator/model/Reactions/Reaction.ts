@@ -26,12 +26,12 @@ export class Reaction {
             // Remove burning aura if dendro is gone
             auraElement.gaugeUnits = 0;
 
-            const pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+            const pyroAura = target.getElement('Pyro');
             if (pyroAura) {
                 pyroAura.gaugeUnits = 0;
             }
             
-            const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+            const dendroAura = target.getElement('Dendro');
             if (dendroAura){
                 dendroAura.resetDecayRate();
             }

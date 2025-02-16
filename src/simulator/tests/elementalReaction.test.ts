@@ -50,7 +50,7 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
 
         expect(target.auras[0].element.name).toBe('Frozen');
-        expect(target.auras.find(aura => aura.element.name == 'Hydro')).not.toBeDefined();
+        expect(target.getElement('Hydro')).not.toBeDefined();
     });
 
     test('Adding 1U cryo to a target that has 2U hydro, leaves both a hydro and a frozen aura.', () => {
@@ -59,8 +59,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
         target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
 
-        expect(target.auras.find(aura => aura.element.name == 'Frozen')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Hydro')).toBeDefined();
+        expect(target.getElement('Frozen')).toBeDefined();
+        expect(target.getElement('Hydro')).toBeDefined();
     });
 
     test('Adding 1U hydro to a target with a 2U cryo aura and 1U dendro results in only a frozen aura.', () => {
@@ -68,8 +68,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
         target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2));
 
-        expect(target.auras.find(aura => aura.element.name == 'Cryo')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Dendro')).toBeDefined();
+        expect(target.getElement('Cryo')).toBeDefined();
+        expect(target.getElement('Dendro')).toBeDefined();
 
         const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
 
@@ -82,8 +82,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
         target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
 
-        expect(target.auras.find(aura => aura.element.name == 'Cryo')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Dendro')).toBeDefined();
+        expect(target.getElement('Cryo')).toBeDefined();
+        expect(target.getElement('Dendro')).toBeDefined();
 
         const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
 
@@ -103,14 +103,14 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
 
         // Leads to a quicken aura
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        expect(target.getElement('Quicken')).toBeDefined();
 
-        expect(target.auras.find(aura => aura.element.name == 'Electro')).not.toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Dendro')).not.toBeDefined();
+        expect(target.getElement('Electro')).not.toBeDefined();
+        expect(target.getElement('Dendro')).not.toBeDefined();
 
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
-        expect(target.auras.find(aura => aura.element.name == 'Electro')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
+        expect(target.getElement('Electro')).toBeDefined();
+        expect(target.getElement('Quicken')).toBeDefined();
     })
 
     test('Adding 1U dendro to a target with 2U electro causes a spread quicken reaction with resulting electro aura', () => {
@@ -120,11 +120,11 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
 
         // Leads to a quicken aura
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Electro')).toBeDefined();
+        expect(target.getElement('Quicken')).toBeDefined();
+        expect(target.getElement('Electro')).toBeDefined();
 
         // No underlying dendro aura
-        expect(target.auras.find(aura => aura.element.name == 'Dendro')).not.toBeDefined();
+        expect(target.getElement('Dendro')).not.toBeDefined();
     })
 
     test('Triggering a second quicken reaction refreshes the quicken aura if the gauge is larger', () => {
@@ -132,21 +132,21 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
 
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
-        let quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        expect(target.getElement('Quicken')).toBeDefined();
+        let quickenAura = target.getElement('Quicken');
         expect(quickenAura?.gaugeUnits).toBeCloseTo(0.8);
 
         // Larger aura will refresh the quicken aura
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 2));
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 2));
-        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        quickenAura = target.getElement('Quicken');
         expect(quickenAura?.gaugeUnits).toBeCloseTo(1.6);
 
         // Smaller aura will not refresh the quicken aura
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
-        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
+        expect(target.getElement('Quicken')).toBeDefined();
+        quickenAura = target.getElement('Quicken');
         expect(quickenAura?.gaugeUnits).toBeCloseTo(1.6);
     })
 
@@ -157,12 +157,12 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
 
         // Leads to a quicken aura with underlying dendro aura
-        expect(target.auras.find(aura => aura.element.name == 'Quicken')).toBeDefined();
-        expect(target.auras.find(aura => aura.element.name == 'Dendro')).toBeDefined();
+        expect(target.getElement('Quicken')).toBeDefined();
+        expect(target.getElement('Dendro')).toBeDefined();
 
         target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
-        let quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
-        let dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        let quickenAura = target.getElement('Quicken');
+        let dendroAura = target.getElement('Dendro');
         expect(quickenAura).toBeDefined();
         expect(dendroAura).toBeDefined();
 
@@ -170,8 +170,8 @@ describe('Adding electro and dendro to a target causes a quicken reaction', () =
         expect(quickenAura?.gaugeUnits ?? 0).toBeCloseTo(dendroAura?.gaugeUnits ?? 0);
 
         target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
-        quickenAura = target.auras.find(aura => aura.element.name == 'Quicken');
-        dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        quickenAura = target.getElement('Quicken');
+        dendroAura = target.getElement('Dendro');
         expect(quickenAura).not.toBeDefined();
         expect(dendroAura).not.toBeDefined();
     })
@@ -187,8 +187,8 @@ describe('Adding electro and hydro to a target causes an electro-charge reaction
         // Apply electro
         target.applyElement(new ElementalGauge(new ElementType('Electro'), 1));
 
-        let electroAura = target.auras.find(aura => aura.element.name == 'Electro');
-        let hydroAura = target.auras.find(aura => aura.element.name == 'Hydro');
+        let electroAura = target.getElement('Electro');
+        let hydroAura = target.getElement('Hydro');
 
         expect(electroAura).toBeDefined();
         expect(hydroAura).toBeDefined();
@@ -201,8 +201,8 @@ describe('Adding electro and hydro to a target causes an electro-charge reaction
         target.timeStep(1);
 
         // Check that both auras are removed
-        electroAura = target.auras.find(aura => aura.element.name == 'Electro');
-        hydroAura = target.auras.find(aura => aura.element.name == 'Hydro');
+        electroAura = target.getElement('Electro');
+        hydroAura = target.getElement('Hydro');
 
         expect(electroAura).not.toBeDefined();
         expect(hydroAura).not.toBeDefined();
@@ -217,11 +217,11 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
         target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
 
-        const burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        const burningAura = target.getElement('Burning');
         expect(burningAura).toBeDefined();
         expect(burningAura?.gaugeUnits).toBe(2);
 
-        const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        const dendroAura = target.getElement('Dendro');
         expect(dendroAura).toBeDefined();
         expect(dendroAura?.decayRate).toBe(2.5);
     })
@@ -235,30 +235,30 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         // Last for at least 3 seconds
         target.timeStep(2);
 
-        let burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        let burningAura = target.getElement('Burning');
         expect(burningAura).toBeDefined();
 
         // Reapplied underlying pyro should be 1U * 0.8 = 0.8U
-        let pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        let pyroAura = target.getElement('Pyro');
         expect(pyroAura?.gaugeUnits).toBe(0.8);
 
         // Burning expire after 2+1=3 seconds
         target.timeStep(1);
         // Dendro used up
-        const dendroAura = target.auras.find(aura => aura.element.name == 'Dendro');
+        const dendroAura = target.getElement('Dendro');
         expect(dendroAura).not.toBeDefined();
 
-        burningAura = target.auras.find(aura => aura.element.name == 'Burning');
+        burningAura = target.getElement('Burning');
         expect(burningAura).not.toBeDefined();
 
         // Pyro aura decays completely 9.5s after refresh 
         target.timeStep(8.4);
-        pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        pyroAura = target.getElement('Pyro');
         expect(pyroAura).toBeDefined();
 
         // Pyro expired
         target.timeStep(0.1);
-        pyroAura = target.auras.find(aura => aura.element.name == 'Pyro');
+        pyroAura = target.getElement('Pyro');
         expect(pyroAura).not.toBeDefined();
     })
 

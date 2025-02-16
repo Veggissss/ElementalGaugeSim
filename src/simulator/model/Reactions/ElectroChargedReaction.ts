@@ -29,9 +29,9 @@ export class ElectroChargedReaction extends Reaction {
      * However, if one of the gauges empties within 0.5s of the last Electro-Charged tick, there will not be another tick of Electro-Charged.
      * @param target target to step electro charged reaction on
      */
-    public static step(target: Target){
-        const electroAura = target.auras.find(aura => aura.element.name === 'Electro');
-        const hydroAura = target.auras.find(aura => aura.element.name === 'Hydro');
+    public static step(target: Target) {
+        const electroAura = target.getElement('Electro');
+        const hydroAura = target.getElement('Hydro');
 
         if (electroAura && hydroAura) {
             if (electroAura.time >= 1 || hydroAura.time >= 1) {
@@ -48,7 +48,7 @@ export class ElectroChargedReaction extends Reaction {
      * @param electroAura Electro aura
      * @param hydroAura Hydro aura
      */
-    private static tick(electroAura : ElementalGauge, hydroAura : ElementalGauge){
+    private static tick(electroAura: ElementalGauge, hydroAura: ElementalGauge) {
         electroAura.gaugeUnits -= electroChargeTickAmount;
         hydroAura.gaugeUnits -= electroChargeTickAmount;
 
