@@ -27,12 +27,19 @@ class ElementAuras extends Component<ElementAurasProps> {
 
         return (
             <Box minHeight={250} maxHeight={325}>
-                <h2>Element Auras:</h2>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Element Auras:</h2>
                 <div id='element-auras'>
                     {target.auras.map((aura, index) => (
                         <div key={index}>
-                            <h3>{aura.gaugeUnits.toFixed(2)}U {aura.element.name} Decay: {aura.decayRate.toFixed(3)}s/U</h3>
-                            <Image src={elementImages[aura.element.name]} alt={aura.element.name} height={50} width={50} />
+                            <h3>{aura.element.name} {aura.gaugeUnits.toFixed(2)}U ({aura.decayRate.toFixed(3)}s/U {(aura.gaugeUnits * aura.decayRate).toFixed(1)}s)</h3>
+                            <Image
+                                src={elementImages[aura.element.name]}
+                                alt={aura.element.name}
+                                height={50}
+                                width={50}
+                                loading="eager"
+                                unoptimized={false}
+                            />
                         </div>
                     ))}
                 </div>

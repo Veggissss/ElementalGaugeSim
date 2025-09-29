@@ -27,7 +27,7 @@ class ReactionsOccurred extends Component<ReactionsOccurredProps> {
 
         return (
             <Box minHeight={250} maxHeight={325}>
-                <h2>Reactions Occurred:</h2>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Reactions Occurred:</h2>
                 <div id='element-reactions'>
                     {reactions.map((reaction, index) => (
                         <div key={index}>
