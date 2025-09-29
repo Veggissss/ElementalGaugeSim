@@ -38,6 +38,19 @@ describe('superconduct elemental reaction', () => {
 
 describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
 
+    test('Adding 1U hydro to a target with a 1U cryo aura results a frozen aura.', () => {
+        const target = new Target();
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+        const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+
+        // Consumed auras
+        expect(target.getElement('Cryo')).not.toBeDefined();
+        expect(target.getElement('Hydro')).not.toBeDefined();
+
+        expect(reactionLog.find(reaction => reaction.name === 'Freeze')).toBeDefined();
+        expect(target.getElement('Frozen')).toBeDefined();
+    });
+
     test('Adding 2U hydro to a target that has 1U cryo, leaves only a frozen aura.', () => {
         const target = new Target();
 
@@ -63,6 +76,26 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         expect(target.getElement('Hydro')).toBeDefined();
     });
 
+    test('Adding two instances of 1U pyro to a target that has both a frozen and a hydro aura will first melt and then vaporize.', () => {
+        const target = new Target();
+
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
+        const freezeReactionLog = target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+        expect(freezeReactionLog.find(reaction => reaction.name === 'Freeze')).toBeDefined();
+
+        expect(target.getElement('Cryo')).not.toBeDefined();
+
+        const meltReactionLog = target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+        expect(meltReactionLog.find(reaction => reaction.name === 'Melt')).toBeDefined();
+
+        // Check auras
+        expect(target.getElement('Frozen')).not.toBeDefined();
+        expect(target.getElement('Hydro')).toBeDefined();
+
+        const vaporizeReactionLog = target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+        expect(vaporizeReactionLog.find(reaction => reaction.name === 'Reverse Vaporize')).toBeDefined()
+    });
+
     test('Adding 1U hydro to a target with a 2U cryo aura and 1U dendro results in only a frozen aura.', () => {
         const target = new Target();
         target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
@@ -73,8 +106,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
 
         const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
 
-        expect(reactionLog.find(reaction => reaction.name == 'Freeze')).toBeDefined();
-        expect(reactionLog.find(reaction => reaction.name == 'Reverse Bloom')).not.toBeDefined();
+        expect(reactionLog.find(reaction => reaction.name === 'Freeze')).toBeDefined();
+        expect(reactionLog.find(reaction => reaction.name === 'Reverse Bloom')).not.toBeDefined();
     });
 
     test('Adding 1U hydro to a target with a 1U cryo aura and 1U dendro results in both a frozen aura and a bloom reaction.', () => {
@@ -87,8 +120,8 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
 
         const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
 
-        expect(reactionLog.find(reaction => reaction.name == 'Freeze')).toBeDefined();
-        expect(reactionLog.find(reaction => reaction.name == 'Reverse Bloom')).toBeDefined();
+        expect(reactionLog.find(reaction => reaction.name === 'Freeze')).toBeDefined();
+        expect(reactionLog.find(reaction => reaction.name === 'Reverse Bloom')).toBeDefined();
     });
 });
 
