@@ -1,29 +1,23 @@
 "use client";
 
 import React, { Component } from 'react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { Box } from '@mui/material';
-import { elementNames } from '@/src/simulator/model/Elements/ElementName';
+import { ElementName, elementNames } from '@/src/simulator/model/Elements/ElementName';
 import { Target } from '@/src/simulator/model/Target';
+
+const elementImages: Record<ElementName, StaticImageData> = {} as Record<ElementName, StaticImageData>;
+elementNames.forEach((element: ElementName) => {
+    elementImages[element] = require(`/public/images/Element_${element}.png`);
+});
 
 interface ElementAurasProps {
     target: Target;
 }
 
 class ElementAuras extends Component<ElementAurasProps> {
-    getElementImages(): { [key: string]: string } {
-        const elementImages: { [key: string]: string } = {};
-        let filePath = "";
-        if (process.env.GITHUB_PAGES_URL) {
-            filePath = process.env.GITHUB_PAGES_URL;
-        }
-        elementNames.forEach((element) => elementImages[element] = filePath + `/images/Element_${element}.png`);
-        return elementImages;
-    }
-
     render() {
         const { target } = this.props;
-        const elementImages = this.getElementImages();
 
         return (
             <Box minHeight={250} maxHeight={325}>
@@ -37,8 +31,6 @@ class ElementAuras extends Component<ElementAurasProps> {
                                 alt={aura.element.name}
                                 height={50}
                                 width={50}
-                                loading="eager"
-                                unoptimized={false}
                             />
                         </div>
                     ))}
