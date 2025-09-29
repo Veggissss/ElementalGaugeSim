@@ -8,11 +8,11 @@ import { BloomReaction } from "./Reactions/BloomReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [
-    new Reaction('Vaporize', ['Burning', 'Pyro'], ['Hydro'], 2),
-    new Reaction('Reverse Vaporize', ['Hydro'], ['Burning', 'Pyro'], 0.5),
-
     new Reaction('Melt', ['Cryo', 'Frozen'], ['Burning', 'Pyro'], 2),
     new Reaction('Reverse Melt', ['Burning', 'Pyro'], ['Cryo', 'Frozen'], 0.5),
+
+    new Reaction('Vaporize', ['Burning', 'Pyro'], ['Hydro'], 2),
+    new Reaction('Reverse Vaporize', ['Hydro'], ['Burning', 'Pyro'], 0.5),
 
     new Reaction('Superconduct', ['Cryo', 'Frozen'], ['Electro'], 1),
     new Reaction('Superconduct', ['Electro'], ['Cryo', 'Frozen'], 1),
