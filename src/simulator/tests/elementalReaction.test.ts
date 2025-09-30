@@ -66,6 +66,24 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         expect(target.getElement('Frozen')).not.toBeDefined()
     });
 
+    test('Adding 1U pyro to a target with a frozen and underlying hydro aura will only react with the frozen aura.', () => {
+        const target = new Target();
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+
+        // Underlying 1U hydro
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 1));
+
+        // Melt off the frozen aura; with normal guage calc it would react through to the hydro and vaporize, but melt is an exception
+        const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+
+        expect(reactionLog.find(reaction => reaction.name === 'Melt')).toBeDefined()
+        expect(reactionLog.find(reaction => reaction.name === 'Reverse Vaporize')).not.toBeDefined()
+
+        expect(target.getElement('Frozen')).not.toBeDefined()
+        expect(target.getElement('Hydro')).toBeDefined()
+    });
+
     test('Adding 1U geo/shatter to a target with a frozen and underlying cryo aura will only remove frozen.', () => {
         const target = new Target();
         target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2));
@@ -359,4 +377,24 @@ describe('Adding pyro to a target with dendro causes burning reaction', () => {
         // Check that reverse bloom occurred through the burning aura
         expect(reactions.find(reaction => reaction.name === 'Reverse Bloom')).not.toBeTruthy();
     })
+
+    test('Adding 1U pyro to a target with a dendro and cryo aura result in a melt reaction, followed by burning with the pyro aura refreshed.', () => {
+        const target = new Target();
+        target.applyElement(new ElementalGauge(new ElementType('Dendro'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+
+        // Melt off the cryo aura and start burning with the remaining application
+        const reactionLog = target.applyElement(new ElementalGauge(new ElementType('Pyro'), 1));
+
+        expect(reactionLog.find(reaction => reaction.name === 'Melt')).toBeDefined()
+        expect(reactionLog.find(reaction => reaction.name === 'Burning')).toBeDefined()
+
+        expect(target.getElement('Cryo')).not.toBeDefined()
+        expect(target.getElement('Pyro')).toBeDefined()
+        expect(target.getElement('Dendro')).toBeDefined()
+        expect(target.getElement('Burning')).toBeDefined()
+
+        // Expect refreshed 1U pyro with aura tax
+        expect(target.getElement('Pyro')?.gaugeUnits).toBeCloseTo(0.8);
+    });
 })

@@ -2,6 +2,7 @@ import { ElementName } from "./Elements/ElementName";
 import { ElementalGauge } from "./Elements/ElementalGauge";
 import { BurningReaction } from "./Reactions/BurningReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
+import { Reaction } from "./Reactions/Reaction";
 import { ReactionLog } from "./Reactions/ReactionLog";
 import { elementalReactions } from "./elementalReactions";
 
@@ -99,16 +100,31 @@ export class Target {
 
         const reactions: ReactionLog[] = [];
         for (const reaction of elementalReactions) {
-            const aura = this.auras.find(aura =>
-                reaction.auraElementName.includes(aura.element.name) &&
-                reaction.appliedElementName.includes(newElement.element.name)
-            );
-            if (!aura) {
+            if (!reaction.appliedElementName.includes(newElement.element.name)) {
                 continue;
             }
+
+            // Find an aura that matches the reaction requirements
+            const matchingAuras = this.auras.filter(a =>
+                reaction.auraElementName.includes(a.element.name)
+            );
+            if (matchingAuras.length === 0) {
+                continue;
+            }
+
+            if (this.shouldSkipReaction(reaction, reactions)) {
+                break;
+            }
+
+            // Sort by priority in auraElementName and take first
+            const aura = matchingAuras.sort((a, b) =>
+                reaction.auraElementName.indexOf(a.element.name) -
+                reaction.auraElementName.indexOf(b.element.name)
+            )[0];
+
             reactions.push(new ReactionLog(reaction, aura, newElement));
             const remaining = reaction.react(this, aura, newElement);
-            console.log(`Reaction '${reaction.name}' occurred with '${aura.element.name}' and '${newElement.element.name}'. Remaining gauge units: '${remaining}'.`);
+            console.log(`Reaction '${reaction.name}' occurred with '${aura.element.name}' and '${newElement.element.name}'. Remaining gauge units: '${remaining}' ${newElement.gaugeUnits}.`);
 
             // If the reaction consumed all gauge units, stop checking for more reactions
             if (remaining < 0 && newElement.gaugeUnits > 0) {
@@ -132,5 +148,19 @@ export class Target {
         this.auras = this.auras.filter(aura => aura.gaugeUnits > floatPrecision);
 
         return reactions;
+    }
+
+    private shouldSkipReaction(reaction: Reaction, reactions: ReactionLog[]) {
+        // https://genshin-impact.fandom.com/wiki/Elemental_Gauge_Theory/Simultaneous_Reaction_Priority
+        if (reaction.name == "Reverse Vaporize" && reactions.find(reaction => reaction.name === "Melt") != undefined) {
+            return true
+        }
+        if (reaction.name == "Electro-Charged" && reactions.find(reaction => reaction.name === "Superconduct") != undefined) {
+            return true
+        }
+        if (reaction.name == "Freeze" && reactions.find(reaction => reaction.name === "Superconduct") != undefined) {
+            return true
+        }
+        return false
     }
 }
