@@ -2,7 +2,6 @@ import { ElementName } from "./Elements/ElementName";
 import { ElementalGauge } from "./Elements/ElementalGauge";
 import { BurningReaction } from "./Reactions/BurningReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
-import { Reaction } from "./Reactions/Reaction";
 import { ReactionLog } from "./Reactions/ReactionLog";
 import { elementalReactions } from "./elementalReactions";
 

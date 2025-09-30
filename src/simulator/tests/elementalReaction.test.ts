@@ -51,6 +51,35 @@ describe('Adding hydro and cryo to a target causes a freeze reaction', () => {
         expect(target.getElement('Frozen')).toBeDefined();
     });
 
+    test('Adding 1U pyro to a target with a frozen and underlying cryo aura will remove both.', () => {
+        const target = new Target();
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2));
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
+
+        // Underlying 1U Cryo
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+
+        // Melt off the frozen aura; with normal guage calc it would be a remaining cryo aura, but melt is an exception
+        target.applyElement(new ElementalGauge(new ElementType('Pyro'), 2));
+
+        expect(target.getElement('Cryo')).not.toBeDefined()
+        expect(target.getElement('Frozen')).not.toBeDefined()
+    });
+
+    test('Adding 1U geo/shatter to a target with a frozen and underlying cryo aura will only remove frozen.', () => {
+        const target = new Target();
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 2));
+        target.applyElement(new ElementalGauge(new ElementType('Hydro'), 2));
+        expect(target.getElement('Frozen')).toBeDefined();
+        expect(target.getElement('Cryo')).not.toBeDefined();
+
+        target.applyElement(new ElementalGauge(new ElementType('Cryo'), 1));
+        target.applyElement(new ElementalGauge(new ElementType('Geo'), 1));
+
+        expect(target.getElement('Frozen')).not.toBeDefined();
+        expect(target.getElement('Cryo')).toBeDefined();
+    });
+
     test('Adding 2U hydro to a target that has 1U cryo, leaves only a frozen aura.', () => {
         const target = new Target();
 

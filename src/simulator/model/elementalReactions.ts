@@ -5,10 +5,11 @@ import { QuickenReaction } from "./Reactions/QuickenReaction";
 import { ElectroChargedReaction } from "./Reactions/ElectroChargedReaction";
 import { CatalyzeReaction } from "./Reactions/CatalyzeReaction";
 import { BloomReaction } from "./Reactions/BloomReaction";
+import { MeltReaction } from "./Reactions/MeltReaction";
 
 // Define elemental reactions with their coefficients
 export const elementalReactions: Reaction[] = [
-    new Reaction('Melt', ['Cryo', 'Frozen'], ['Burning', 'Pyro'], 2),
+    new MeltReaction('Melt', ['Cryo', 'Frozen'], ['Burning', 'Pyro'], 2),
     new Reaction('Reverse Melt', ['Burning', 'Pyro'], ['Cryo', 'Frozen'], 0.5),
 
     new Reaction('Vaporize', ['Burning', 'Pyro'], ['Hydro'], 2),
