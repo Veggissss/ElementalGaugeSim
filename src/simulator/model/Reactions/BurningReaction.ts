@@ -16,6 +16,11 @@ export class BurningReaction extends Reaction {
         // Add reacting element as aura, can be dendro or pyro
         target.addElementAsAura(appliedElement);
 
+        const pyroAura = target.getElement('Pyro');
+        if (pyroAura) {
+            pyroAura.gaugeUnits = pyroAura.originalGaugeUnits * target.auraTax;
+        }
+
         // Set dendro and or quicken aura to 0.4U/s decay rate
         const burningFuelAuras: ElementName[] = ['Dendro', 'Quicken'];
         burningFuelAuras.forEach(elementName => {

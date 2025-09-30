@@ -21,19 +21,20 @@ export class Reaction {
     public react(target: Target, auraElement: ElementalGauge, appliedElement: ElementalGauge): number {
         const remainingGaugeUnits = auraElement.react(this.coefficient, appliedElement.gaugeUnits);
 
-        // If burning aura is used up, remove underlying pyro and reset dendro decay rate.
-        if (auraElement.element.name == 'Burning' && remainingGaugeUnits < floatPrecision) {
-            // Remove burning aura if dendro is gone
-            auraElement.gaugeUnits = 0;
-
+        if (auraElement.element.name == 'Burning') {
             const pyroAura = target.getElement('Pyro');
             if (pyroAura) {
-                pyroAura.gaugeUnits = 0;
+                pyroAura.react(this.coefficient, appliedElement.gaugeUnits);
             }
-            
-            const dendroAura = target.getElement('Dendro');
-            if (dendroAura){
-                dendroAura.resetDecayRate();
+
+            // If burning aura is used up, reset dendro decay rate.
+            if (remainingGaugeUnits < floatPrecision) {
+                auraElement.gaugeUnits = 0;
+
+                const dendroAura = target.getElement('Dendro');
+                if (dendroAura) {
+                    dendroAura.resetDecayRate();
+                }
             }
         }
 
